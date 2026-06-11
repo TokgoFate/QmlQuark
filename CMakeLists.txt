@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.16)
 
 project(QmlQuarkDemo VERSION 0.1 LANGUAGES CXX)
 
+file(TO_CMAKE_PATH "${CMAKE_SOURCE_DIR}" QMLQUARK_SOURCE_DIR)
+
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_AUTOMOC ON)
@@ -18,6 +20,10 @@ add_executable(QmlQuarkDemo
 target_link_libraries(QmlQuarkDemo PRIVATE
     Qt${QT_VERSION_MAJOR}::Quick
     Qt${QT_VERSION_MAJOR}::QuickControls2
+)
+
+target_compile_definitions(QmlQuarkDemo PRIVATE
+    QMLQUARK_SOURCE_DIR="${QMLQUARK_SOURCE_DIR}"
 )
 
 if(QT_VERSION_MAJOR EQUAL 6)

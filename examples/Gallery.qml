@@ -1,7 +1,7 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
-import "../src/QmlQuark" as Quark
+import QmlQuark 1.0 as Quark
 
 ApplicationWindow {
     visible: true

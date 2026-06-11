@@ -77,3 +77,22 @@ cmake -S . -B build
 cmake --build build
 ./build/QmlQuarkDemo
 ```
+
+## Debug QML 直载
+
+调试程序在不同构建模式下有两套加载策略：
+
+- Debug 构建：优先从工作区磁盘文件直接加载 `examples/DebugWindow.qml`，并将 `src` 加入 QML import path
+- 非 Debug 构建：继续使用 `resources.qrc` 中打包的 `qrc:/` 资源
+
+这意味着在 Debug 下修改以下目录中的 QML 文件后，不需要重新构建即可让程序读取到最新内容：
+
+- `examples/`
+- `src/QmlQuark/`
+
+调试窗口标题栏还提供了一个 `Reload QML` 按钮，会清理 QML 组件缓存并重新加载当前界面，方便手动验证界面改动。
+
+注意事项：
+
+- 这套机制只针对 QML 文件热更新
+- 如果修改了 C++ 代码、CMake 配置、`resources.qrc` 或模块结构，仍然需要重新构建

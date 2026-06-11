@@ -6,7 +6,8 @@ Pane {
     id: control
 
     property string title: ""
-    default property alias contentData: body.data
+    // Keep card children inside the body column and avoid overriding Pane.contentData.
+    default property alias bodyContent: body.data
 
     padding: 16
 

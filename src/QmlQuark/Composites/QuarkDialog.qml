@@ -11,7 +11,8 @@ Popup {
     property string rejectText: qsTr("取消")
     property bool showAcceptButton: true
     property bool showRejectButton: true
-    default property alias contentData: body.data
+    // Route declarative children into the dialog body without shadowing Popup.contentData.
+    default property alias bodyContent: body.data
 
     signal accepted()
     signal rejected()
