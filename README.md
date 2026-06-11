@@ -61,3 +61,19 @@ Quark.QuarkCard {
 示例页面位于：
 
 - `/home/runner/work/QmlQuark/QmlQuark/TokgoFate/QmlQuark/examples/Gallery.qml`
+
+## 构建与调试入口
+
+新增了一个可运行的 Qt Quick 调试程序：
+
+- CMake: `/home/runner/work/QmlQuark/QmlQuark/TokgoFate/QmlQuark/CMakeLists.txt`
+- 入口: `/home/runner/work/QmlQuark/QmlQuark/TokgoFate/QmlQuark/src/main.cpp`
+- 调试界面: `/home/runner/work/QmlQuark/QmlQuark/TokgoFate/QmlQuark/examples/DebugWindow.qml`
+
+本地构建示例（需已安装 Qt5/Qt6 的 Quick 与 QuickControls2）：
+
+```bash
+cmake -S . -B build
+cmake --build build
+./build/QmlQuarkDemo
+```
