@@ -1,0 +1,16 @@
+module QmlQuark
+
+singleton Palette 1.0 Theme/Palette.qml
+singleton Typography 1.0 Theme/Typography.qml
+
+QuarkButton 1.0 Controls/QuarkButton.qml
+QuarkDropdown 1.0 Controls/QuarkDropdown.qml
+QuarkProgressBar 1.0 Controls/QuarkProgressBar.qml
+QuarkSelectBox 1.0 Controls/QuarkSelectBox.qml
+QuarkTextField 1.0 Controls/QuarkTextField.qml
+
+QuarkAlertDialog 1.0 Composites/QuarkAlertDialog.qml
+QuarkCard 1.0 Composites/QuarkCard.qml
+QuarkDialog 1.0 Composites/QuarkDialog.qml
+QuarkFileManager 1.0 Composites/QuarkFileManager.qml
+QuarkPromptDialog 1.0 Composites/QuarkPromptDialog.qml
