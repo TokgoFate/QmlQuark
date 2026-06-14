@@ -10,28 +10,47 @@ ComboBox {
     font.family: Quark.Typography.family
     font.pixelSize: Quark.Typography.md
 
-    delegate: ItemDelegate {
-        width: control.width
-        contentItem: Text {
-            text: modelData
-            color: Quark.Palette.text
+    delegate: Rectangle {
+        property bool isSelected: index === control.highlightedIndex
+
+        width: ListView.view ? ListView.view.width : control.width
+        height: 40
+        radius: 10
+        color: mouseArea.containsMouse ? Quark.Palette.surfaceAlt : "transparent"
+
+        Text {
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.left: parent.left
+            anchors.leftMargin: 12
+            anchors.right: parent.right
+            anchors.rightMargin: 12
+            text: typeof modelData === "string" ? modelData : (modelData.text || "")
+            color: isSelected ? Quark.Palette.accent : Quark.Palette.text
             font.family: Quark.Typography.family
             font.pixelSize: Quark.Typography.md
-            verticalAlignment: Text.AlignVCenter
+            elide: Text.ElideRight
         }
-        background: Rectangle {
-            color: highlighted ? Quark.Palette.surfaceAlt : Quark.Palette.surface
+
+        MouseArea {
+            id: mouseArea
+            anchors.fill: parent
+            hoverEnabled: true
+            onClicked: {
+                control.currentIndex = index;
+                control.popup.close();
+            }
         }
     }
 
-    indicator: Text {
-        text: "⌄"
-        color: Quark.Palette.textMuted
-        font.family: Quark.Typography.family
-        font.pixelSize: Quark.Typography.lg
+    indicator: Image {
+        width: 16
+        height: 16
         anchors.right: parent.right
         anchors.rightMargin: 14
         anchors.verticalCenter: parent.verticalCenter
+        source: "qrc:/Icons/chevron-down.svg"
+        fillMode: Image.PreserveAspectFit
+        // color: Quark.Palette.textMuted
     }
 
     contentItem: Text {

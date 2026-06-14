@@ -1,0 +1,22 @@
+<RCC>
+    <qresource prefix="/Quark">
+        <file>Composites/QuarkAlertDialog.qml</file>
+        <file>Composites/QuarkCard.qml</file>
+        <file>Composites/QuarkDialog.qml</file>
+        <file>Composites/QuarkFileManager.qml</file>
+        <file>Composites/QuarkPromptDialog.qml</file>
+        <file>Controls/QuarkButton.qml</file>
+        <file>Controls/QuarkDropdown.qml</file>
+        <file>Controls/QuarkIcon.qml</file>
+        <file>Controls/QuarkProgressBar.qml</file>
+        <file>Controls/QuarkSelectBox.qml</file>
+        <file>Controls/QuarkSlider.qml</file>
+        <file>Controls/QuarkTextField.qml</file>
+        <file>Theme/Palette.qml</file>
+        <file>Theme/Typography.qml</file>
+        <file>qmldir</file>
+    </qresource>
+    <qresource prefix="/Icons">
+        <file alias="chevron-down.svg">Icons/chevron-down.svg</file>
+    </qresource>
+</RCC>

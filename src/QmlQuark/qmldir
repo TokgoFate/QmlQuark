@@ -6,6 +6,7 @@ singleton Typography 1.0 Theme/Typography.qml
 QuarkButton 1.0 Controls/QuarkButton.qml
 QuarkDropdown 1.0 Controls/QuarkDropdown.qml
 QuarkProgressBar 1.0 Controls/QuarkProgressBar.qml
+QuarkSlider 1.0 Controls/QuarkSlider.qml
 QuarkSelectBox 1.0 Controls/QuarkSelectBox.qml
 QuarkTextField 1.0 Controls/QuarkTextField.qml
 

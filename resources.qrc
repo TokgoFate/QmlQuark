@@ -2,18 +2,5 @@
     <qresource prefix="/">
         <file>examples/DebugWindow.qml</file>
         <file>examples/Gallery.qml</file>
-        <file>src/QmlQuark/qmldir</file>
-        <file>src/QmlQuark/Theme/Palette.qml</file>
-        <file>src/QmlQuark/Theme/Typography.qml</file>
-        <file>src/QmlQuark/Controls/QuarkButton.qml</file>
-        <file>src/QmlQuark/Controls/QuarkDropdown.qml</file>
-        <file>src/QmlQuark/Controls/QuarkProgressBar.qml</file>
-        <file>src/QmlQuark/Controls/QuarkSelectBox.qml</file>
-        <file>src/QmlQuark/Controls/QuarkTextField.qml</file>
-        <file>src/QmlQuark/Composites/QuarkAlertDialog.qml</file>
-        <file>src/QmlQuark/Composites/QuarkCard.qml</file>
-        <file>src/QmlQuark/Composites/QuarkDialog.qml</file>
-        <file>src/QmlQuark/Composites/QuarkFileManager.qml</file>
-        <file>src/QmlQuark/Composites/QuarkPromptDialog.qml</file>
     </qresource>
 </RCC>

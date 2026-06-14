@@ -12,8 +12,10 @@ ApplicationWindow {
     title: "QmlQuark Debug UI"
 
     header: ToolBar {
+        height: 60
         background: Rectangle {
             color: Quark.Palette.surface
+
             border.width: 1
             border.color: Quark.Palette.border
         }
@@ -31,7 +33,9 @@ ApplicationWindow {
                 font.bold: true
             }
 
-            Item { Layout.fillWidth: true }
+            Item {
+                Layout.fillWidth: true
+            }
 
             Quark.QuarkButton {
                 text: "Alert"
@@ -102,9 +106,19 @@ ApplicationWindow {
                 value: slider.value
             }
 
-            Slider {
+            Quark.QuarkSlider {
                 id: slider
                 width: parent.width
+                from: 0
+                to: 1
+                value: 0.45
+            }
+
+            Quark.QuarkSlider {
+                id: slider1
+                width: 18
+                height: 240
+                orientation: Qt.Vertical
                 from: 0
                 to: 1
                 value: 0.45
@@ -118,26 +132,39 @@ ApplicationWindow {
 
             ColumnLayout {
                 width: parent.width
+                Layout.fillHeight: true
                 spacing: 12
 
                 Quark.QuarkButton {
+                    id: debugBtn
                     text: "打开调试菜单"
                     onClicked: debugMenu.open()
                 }
 
                 Quark.QuarkDropdown {
                     id: debugMenu
-                    y: 48
+                    y: debugBtn.height + 7
                     model: ["重载界面", "刷新数据", "打开日志"]
                 }
 
                 Quark.QuarkFileManager {
                     Layout.fillWidth: true
-                    entries: [
-                        { "name": "assets", "isDirectory": true },
-                        { "name": "theme.conf", "isDirectory": false },
-                        { "name": "ui-debug.log", "isDirectory": false }
-                    ]
+                    Layout.fillHeight: true
+                    currentPath: "../"
+                    showSearch: true
+                    showFileSize: true
+
+                    onEntryDoubleClicked: function (entry, index) {
+                        console.log("双击:", entry.name);
+                    }
+                    Rectangle {
+                        anchors.fill: parent
+                        color: "yellow"
+                        opacity: 0.2
+                    }
+                    Component.onCompleted: {
+                        console.info("size " + width + ", " + height);
+                    }
                 }
             }
         }

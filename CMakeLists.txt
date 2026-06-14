@@ -9,8 +9,10 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 
-find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Quick QuickControls2)
+find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Quick QuickControls2 )
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Quick QuickControls2)
+
+add_subdirectory(src/QmlQuark)
 
 add_executable(QmlQuarkDemo
     src/main.cpp
@@ -18,6 +20,7 @@ add_executable(QmlQuarkDemo
 )
 
 target_link_libraries(QmlQuarkDemo PRIVATE
+    QmlQuarkLib
     Qt${QT_VERSION_MAJOR}::Quick
     Qt${QT_VERSION_MAJOR}::QuickControls2
 )
