@@ -5,6 +5,7 @@
 #include <QAbstractListModel>
 #include <QDir>
 #include <QFileInfo>
+#include <QDateTime>
 
 struct FileEntry {
   QString name;

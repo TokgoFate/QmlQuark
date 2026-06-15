@@ -30,14 +30,21 @@ void UiDevController::performReload() {
   }
 
   const auto roots = m_engine->rootObjects();
-  if (!roots.isEmpty()) {
-    roots.constFirst()->deleteLater();
+  if (roots.isEmpty()) {
+    // 没有旧窗口，直接清缓存并重新加载
+    m_engine->clearComponentCache();
+    m_engine->load(m_mainUrl);
+    m_reloading = false;
+    return;
   }
 
-  QTimer::singleShot(0, this, [this]() {
-    // Drop cached QML components so edited files are read from disk again.
+  // 等旧窗口彻底销毁后，再清缓存加载新 QML
+  // 避免 clearComponentCache() + load() 与存活的旧窗口对象冲突
+  QObject *oldRoot = roots.constFirst();
+  QObject::connect(oldRoot, &QObject::destroyed, this, [this]() {
     m_engine->clearComponentCache();
     m_engine->load(m_mainUrl);
     m_reloading = false;
   });
+  oldRoot->deleteLater();
 }

@@ -30,6 +30,6 @@ target_include_directories(QmlQuarkLib PUBLIC
 
 # 链接 Qt 库
 target_link_libraries(QmlQuarkLib PUBLIC
-    Qt6::Quick
-    Qt6::QuickControls2
+    Qt${QT_VERSION_MAJOR}::Quick
+    Qt${QT_VERSION_MAJOR}::QuickControls2
 )
