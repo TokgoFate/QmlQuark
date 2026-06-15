@@ -150,7 +150,7 @@ ApplicationWindow {
                 Quark.QuarkFileManager {
                     Layout.fillWidth: true
                     Layout.fillHeight: true
-                    currentPath: "../"
+                    currentPath: "./"
                     showSearch: true
                     showFileSize: true
 
