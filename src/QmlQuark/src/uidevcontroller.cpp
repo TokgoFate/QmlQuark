@@ -1,57 +1,70 @@
 #include "uidevcontroller.h"
+
 #include <QTimer>
 
-UiDevController::UiDevController(QGuiApplication *app,
-                                 QQmlApplicationEngine *engine,
+
+UiDevController::UiDevController(QGuiApplication *app, QQmlApplicationEngine *engine,
                                  const QUrl &mainUrl, bool reloadAvailable)
-    : m_app(app), m_engine(engine), m_mainUrl(mainUrl),
-      m_reloadAvailable(reloadAvailable) {}
+    : m_app(app), m_engine(engine), m_mainUrl(mainUrl), m_reloadAvailable(reloadAvailable)
+{}
 
-bool UiDevController::reloadAvailable() const { return m_reloadAvailable; }
-
-bool UiDevController::isReloading() const { return m_reloading; }
-
-void UiDevController::reloadUi() {
-  if (!m_reloadAvailable || !m_engine || m_reloading) {
-    return;
-  }
-
-  m_reloading = true;
-
-  // Defer the actual reload so the current QML signal handler can unwind
-  // first.
-  QTimer::singleShot(0, this, &UiDevController::performReload);
+bool UiDevController::reloadAvailable() const
+{
+    return m_reloadAvailable;
 }
 
-void UiDevController::performReload() {
-  if (!m_engine) {
-    m_reloading = false;
-    return;
-  }
+bool UiDevController::isReloading() const
+{
+    return m_reloading;
+}
 
-  const auto roots = m_engine->rootObjects();
-  if (roots.isEmpty()) {
-    // 没有旧窗口，直接清缓存并重新加载
-    m_engine->clearComponentCache();
-    m_engine->load(m_mainUrl);
-    m_reloading = false;
-    return;
-  }
+void UiDevController::reloadUi()
+{
+    if (!m_reloadAvailable || !m_engine || m_reloading)
+    {
+        return;
+    }
 
-  // 等旧窗口彻底销毁后，再清缓存加载新 QML
-  // 避免 clearComponentCache() + load() 与存活的旧窗口对象冲突
-  QObject *oldRoot = roots.constFirst();
-  QObject::connect(oldRoot, &QObject::destroyed, this, [this]() {
-    QTimer::singleShot(0, this, [this]() {
-      if (!m_engine) {
+    m_reloading = true;
+
+    // Defer the actual reload so the current QML signal handler can unwind
+    // first.
+    QTimer::singleShot(0, this, &UiDevController::performReload);
+}
+
+void UiDevController::performReload()
+{
+    if (!m_engine)
+    {
         m_reloading = false;
         return;
-      }
+    }
 
-      m_engine->clearComponentCache();
-      m_engine->load(m_mainUrl);
-      m_reloading = false;
+    const auto roots = m_engine->rootObjects();
+    if (roots.isEmpty())
+    {
+        // 没有旧窗口，直接清缓存并重新加载
+        m_engine->clearComponentCache();
+        m_engine->load(m_mainUrl);
+        m_reloading = false;
+        return;
+    }
+
+    // 等旧窗口彻底销毁后，再清缓存加载新 QML
+    // 避免 clearComponentCache() + load() 与存活的旧窗口对象冲突
+    QObject *oldRoot = roots.constFirst();
+    QObject::connect(oldRoot, &QObject::destroyed, this, [this]() {
+        QTimer::singleShot(0, this, [this]() {
+            if (!m_engine)
+            {
+                m_reloading = false;
+                return;
+            }
+
+            m_engine->clearComponentCache();
+            m_engine->load(m_mainUrl);
+            m_reloading = false;
+        });
     });
-  });
-  oldRoot->deleteLater();
+    oldRoot->deleteLater();
 }

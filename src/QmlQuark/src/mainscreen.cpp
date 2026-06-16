@@ -2,6 +2,7 @@
 #include "filesystemmodel.h"
 
 #include <QQmlContext>
+#include <QDebug>
 
 void listResources(const QString &path = ":/") {
   QDir dir(path);
