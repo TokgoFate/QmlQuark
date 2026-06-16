@@ -1,5 +1,6 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
+import QtQuick.Layouts 1.15
 import ".." as Quark
 
 Pane {
@@ -18,11 +19,13 @@ Pane {
         border.color: Quark.Palette.border
     }
 
-    contentItem: Column {
+    contentItem: ColumnLayout {
         spacing: 12
         width: control.availableWidth
+        height: control.availableHeight
 
         Text {
+            Layout.fillWidth: true
             visible: control.title.length > 0
             text: control.title
             color: Quark.Palette.text
@@ -31,10 +34,18 @@ Pane {
             font.bold: true
         }
 
-        Column {
-            id: body
-            spacing: 8
-            width: parent.width
+        Item {
+            id: bodyHost
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            implicitWidth: body.implicitWidth
+            implicitHeight: body.implicitHeight
+
+            ColumnLayout {
+                id: body
+                anchors.fill: parent
+                spacing: 8
+            }
         }
     }
 }

@@ -1,7 +1,7 @@
+import QmlQuark 1.0 as Quark
 import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
-import QmlQuark 1.0 as Quark
 
 ApplicationWindow {
     visible: true
@@ -30,12 +30,14 @@ ApplicationWindow {
                 Quark.QuarkSelectBox {
                     model: ["工业主题", "深色主题", "浅色主题"]
                 }
+
             }
 
             Quark.QuarkProgressBar {
                 width: parent.width
                 value: 0.68
             }
+
         }
 
         Quark.QuarkCard {
@@ -60,27 +62,37 @@ ApplicationWindow {
                     text: "打开输入弹窗"
                     onClicked: promptDialog.open()
                 }
+
             }
 
             Quark.QuarkDropdown {
                 id: quickMenu
+
                 y: 52
                 model: ["新建文件", "刷新目录", "打开设置"]
             }
+
         }
 
         Quark.QuarkFileManager {
             Layout.fillWidth: true
-            entries: [
-                { "name": "Documents", "isDirectory": true },
-                { "name": "device-config.json", "isDirectory": false },
-                { "name": "log-2026-06-11.txt", "isDirectory": false }
-            ]
+            entries: [{
+                "name": "Documents",
+                "isDirectory": true
+            }, {
+                "name": "device-config.json",
+                "isDirectory": false
+            }, {
+                "name": "log-2026-06-11.txt",
+                "isDirectory": false
+            }]
         }
+
     }
 
     Quark.QuarkAlertDialog {
         id: alertDialog
+
         x: (parent.width - width) / 2
         y: (parent.height - height) / 2
         title: "删除提醒"
@@ -89,10 +101,12 @@ ApplicationWindow {
 
     Quark.QuarkPromptDialog {
         id: promptDialog
+
         x: (parent.width - width) / 2
         y: (parent.height - height) / 2
         title: "输入名称"
         message: "请输入一个新的卡片名称。"
         placeholderText: "例如：设备看板"
     }
+
 }

@@ -6,6 +6,8 @@
 #include <QQuickStyle>
 #include <QTimer>
 
+#include <memory>
+
 #include "QmlQuark/src/mainscreen.h"
 #include "QmlQuark/src/uidevcontroller.h"
 
@@ -14,6 +16,7 @@ int main(int argc, char *argv[]) {
   QQuickStyle::setStyle(QStringLiteral("Basic"));
   app.setQuitOnLastWindowClosed(false);
 
+  std::unique_ptr<UiDevController> devController;
   QQmlApplicationEngine engine;
 
   const QDir sourceDir(QStringLiteral(QMLQUARK_SOURCE_DIR));
@@ -34,13 +37,16 @@ int main(int argc, char *argv[]) {
   }
 #endif
 
-  UiDevController devController(&app, &engine, mainUrl, reloadAvailable);
+  devController = std::make_unique<UiDevController>(&app, &engine, mainUrl,
+                                                    reloadAvailable);
   engine.rootContext()->setContextProperty(QStringLiteral("devTools"),
-                                           &devController);
+                                           devController.get());
+
+  UiDevController *devTools = devController.get();
 
   QObject::connect(&app, &QGuiApplication::lastWindowClosed, &app,
-                   [&app, &devController]() {
-                     if (!devController.isReloading()) {
+                   [&app, devTools]() {
+                     if (!devTools->isReloading()) {
                        app.quit();
                      }
                    });

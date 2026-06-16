@@ -42,9 +42,16 @@ void UiDevController::performReload() {
   // 避免 clearComponentCache() + load() 与存活的旧窗口对象冲突
   QObject *oldRoot = roots.constFirst();
   QObject::connect(oldRoot, &QObject::destroyed, this, [this]() {
-    m_engine->clearComponentCache();
-    m_engine->load(m_mainUrl);
-    m_reloading = false;
+    QTimer::singleShot(0, this, [this]() {
+      if (!m_engine) {
+        m_reloading = false;
+        return;
+      }
+
+      m_engine->clearComponentCache();
+      m_engine->load(m_mainUrl);
+      m_reloading = false;
+    });
   });
   oldRoot->deleteLater();
 }

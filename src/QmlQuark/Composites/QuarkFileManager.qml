@@ -32,7 +32,8 @@ Quark.QuarkCard {
 
     // 列表高度范围
     property int minListHeight: 200
-    property int maxListHeight: 400
+    // <= 0 表示不限制最大高度
+    property int maxListHeight: -1
 
     // 委托项高度
     property int itemHeight: 52
@@ -108,270 +109,297 @@ Quark.QuarkCard {
     // 标题
     title: qsTr("文件管理器")
 
-    // ========== 工具栏 ==========
-    RowLayout {
-        id: toolbar
-        width: parent.width
-        height: visible ? implicitHeight : 0
-        spacing: 12
-        visible: control.showToolbar
+    ColumnLayout {
+        id: contentLayout
+        Layout.fillWidth: true
+        Layout.fillHeight: true
+        spacing: 8
 
-        Quark.QuarkButton {
-            text: qsTr("返回上级")
-            enabled: _model ? _model.canNavigateUp : false
-            accentColor: Quark.Palette.surfaceAlt
-            foregroundColor: Quark.Palette.text
-            onClicked: {
-                if (_model)
-                    _model.navigateUp();
-                control.navigateUpClicked();
-            }
-        }
-
-        Quark.QuarkButton {
-            text: "🔄"
-            accentColor: Quark.Palette.surfaceAlt
-            foregroundColor: Quark.Palette.text
-            onClicked: {
-                if (_model)
-                    _model.refresh();
-                control.refreshClicked();
-            }
-        }
-
-        Quark.QuarkButton {
-            text: "📁+"
-            accentColor: Quark.Palette.surfaceAlt
-            foregroundColor: Quark.Palette.text
-            onClicked: newFolderDialog.open()
-        }
-
-        Text {
+        // ========== 工具栏 ==========
+        RowLayout {
+            id: toolbar
             Layout.fillWidth: true
-            text: control.currentPath
-            color: Quark.Palette.textMuted
-            font.family: Quark.Typography.family
-            font.pixelSize: Quark.Typography.sm
-            elide: Text.ElideMiddle
-            verticalAlignment: Text.AlignVCenter
-        }
+            Layout.preferredHeight: visible ? implicitHeight : 0
+            Layout.minimumHeight: visible ? implicitHeight : 0
+            Layout.maximumHeight: visible ? implicitHeight : 0
+            spacing: 12
+            visible: control.showToolbar
 
-        Text {
-            text: _model ? (_model.rowCount + qsTr(" 项")) : ""
-            color: Quark.Palette.textMuted
-            font.family: Quark.Typography.family
-            font.pixelSize: Quark.Typography.sm
-        }
-    }
-
-    // ========== 搜索框 ==========
-    Quark.QuarkTextField {
-        id: search
-        width: parent.width
-        height: visible ? implicitHeight : 0
-        visible: control.showSearch
-        placeholderText: qsTr("搜索文件...")
-
-        onTextChanged: {
-            control.searchKeyword = text;
-            control.filterEntries();
-        }
-    }
-
-    // ========== 文件列表 ==========
-    ListView {
-        id: fileList
-        width: parent.width
-        height: control.minListHeight
-        clip: true
-        spacing: 6
-        model: control.searchKeyword ? control.filteredEntries : _model
-
-        ScrollBar.vertical: ScrollBar {
-            policy: ScrollBar.AsNeeded
-        }
-
-        // 空状态
-        Text {
-            visible: fileList.count === 0 && !(_model && _model.loading)
-            anchors.centerIn: parent
-            text: {
-                if (!control.searchKeyword)
-                    return qsTr("目录为空");
-                return qsTr("无匹配结果");
+            Quark.QuarkButton {
+                text: qsTr("返回上级")
+                enabled: _model ? _model.canNavigateUp : false
+                accentColor: Quark.Palette.surfaceAlt
+                foregroundColor: Quark.Palette.text
+                onClicked: {
+                    if (_model)
+                        _model.navigateUp();
+                    control.navigateUpClicked();
+                }
             }
-            color: Quark.Palette.textMuted
-            font.family: Quark.Typography.family
-            font.pixelSize: Quark.Typography.md
+
+            Quark.QuarkButton {
+                text: "🔄"
+                accentColor: Quark.Palette.surfaceAlt
+                foregroundColor: Quark.Palette.text
+                onClicked: {
+                    if (_model)
+                        _model.refresh();
+                    control.refreshClicked();
+                }
+            }
+
+            Quark.QuarkButton {
+                text: "📁+"
+                accentColor: Quark.Palette.surfaceAlt
+                foregroundColor: Quark.Palette.text
+                onClicked: newFolderDialog.open()
+            }
+
+            Text {
+                Layout.fillWidth: true
+                text: control.currentPath
+                color: Quark.Palette.textMuted
+                font.family: Quark.Typography.family
+                font.pixelSize: Quark.Typography.sm
+                elide: Text.ElideMiddle
+                verticalAlignment: Text.AlignVCenter
+            }
+
+            Text {
+                text: control.formatTotalCountText()
+                color: Quark.Palette.textMuted
+                font.family: Quark.Typography.family
+                font.pixelSize: Quark.Typography.sm
+            }
         }
 
-        // 加载中
-        BusyIndicator {
-            visible: _model ? _model.loading : false
-            anchors.centerIn: parent
-            running: true
+        // ========== 搜索框 ==========
+        Quark.QuarkTextField {
+            id: search
+            Layout.fillWidth: true
+            Layout.preferredHeight: visible ? implicitHeight : 0
+            Layout.minimumHeight: visible ? implicitHeight : 0
+            Layout.maximumHeight: visible ? implicitHeight : 0
+            visible: control.showSearch
+            placeholderText: qsTr("搜索文件...")
+
+            onTextChanged: {
+                control.searchKeyword = text;
+                control.filterEntries();
+            }
         }
 
-        delegate: Rectangle {
-            id: delegateItem
-            property int itemIndex: model.index !== undefined ? model.index : index
-            property var entry: {
-                return {
-                    name: model.name || "",
-                    path: model.path || "",
-                    isDirectory: model.isDirectory || false,
-                    size: model.size || "",
-                    modified: model.modified || "",
-                    iconType: model.iconType || "file"
-                };
-            }
-            property bool isSelected: control.selectedIndices.indexOf(itemIndex) !== -1
+        // ========== 文件列表 ==========
+        Rectangle {
+            id: listFrame
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            Layout.minimumHeight: control.minListHeight
+            Layout.maximumHeight: control.maxListHeight > 0 ? control.maxListHeight : Number.POSITIVE_INFINITY
+            implicitHeight: control.minListHeight
+            radius: 12
+            color: "transparent"
+            border.width: 1
+            border.color: Quark.Palette.border
+            clip: true
 
-            width: ListView.view.width
-            height: control.itemHeight
-            radius: 14
-            color: {
-                if (isSelected)
-                    return Quark.Palette.accent + "20";
-                if (mouseArea.containsMouse)
-                    return Quark.Palette.surfaceAlt;
-                return "transparent";
-            }
-            border.width: isSelected ? 2 : 1
-            border.color: isSelected ? Quark.Palette.accent : Quark.Palette.border
-
-            RowLayout {
+            ListView {
+                id: fileList
                 anchors.fill: parent
-                anchors.margins: 12
-                spacing: 10
+                anchors.margins: 8
+                clip: true
+                spacing: 6
+                model: control.searchKeyword ? control.filteredEntries : _model
 
-                // 图标
-                Text {
-                    text: {
-                        switch (entry.iconType) {
-                        case "folder":
-                            return "📁";
-                        case "image":
-                            return "🖼️";
-                        case "video":
-                            return "🎬";
-                        case "audio":
-                            return "🎵";
-                        case "text":
-                            return "📄";
-                        case "doc":
-                            return "📝";
-                        case "pdf":
-                            return "📕";
-                        case "code":
-                            return "💻";
-                        case "archive":
-                            return "📦";
-                        default:
-                            return "📄";
-                        }
-                    }
-                    font.pixelSize: Quark.Typography.lg
-                    verticalAlignment: Text.AlignVCenter
+                ScrollBar.vertical: ScrollBar {
+                    policy: ScrollBar.AsNeeded
                 }
 
-                // 文件名
+                // 空状态
                 Text {
-                    Layout.fillWidth: true
-                    text: entry.name
-                    color: Quark.Palette.text
+                    visible: fileList.count === 0 && !(_model && _model.loading)
+                    anchors.centerIn: parent
+                    text: {
+                        if (!control.searchKeyword)
+                            return qsTr("目录为空");
+                        return qsTr("无匹配结果");
+                    }
+                    color: Quark.Palette.textMuted
                     font.family: Quark.Typography.family
                     font.pixelSize: Quark.Typography.md
-                    verticalAlignment: Text.AlignVCenter
-                    elide: Text.ElideRight
                 }
 
-                // 文件大小
-                Text {
-                    visible: control.showFileSize && !entry.isDirectory && entry.size !== ""
-                    text: entry.size
-                    color: Quark.Palette.textMuted
-                    font.family: Quark.Typography.family
-                    font.pixelSize: Quark.Typography.sm
+                // 加载中
+                BusyIndicator {
+                    visible: _model ? _model.loading : false
+                    anchors.centerIn: parent
+                    running: true
                 }
 
-                // 修改时间
-                Text {
-                    visible: control.showModifiedTime && entry.modified !== ""
-                    text: entry.modified
-                    color: Quark.Palette.textMuted
-                    font.family: Quark.Typography.family
-                    font.pixelSize: Quark.Typography.sm
-                }
-            }
+                delegate: Rectangle {
+                    id: delegateItem
+                    property int itemIndex: model.index !== undefined ? model.index : index
+                    property var entry: {
+                        return {
+                            name: model.name || "",
+                            path: model.path || "",
+                            isDirectory: model.isDirectory || false,
+                            size: model.size || "",
+                            modified: model.modified || "",
+                            iconType: model.iconType || "file"
+                        };
+                    }
+                    property bool isSelected: control.selectedIndices.indexOf(itemIndex) !== -1
 
-            MouseArea {
-                id: mouseArea
-                anchors.fill: parent
-                hoverEnabled: true
-                acceptedButtons: Qt.LeftButton | Qt.RightButton
+                    width: ListView.view.width
+                    height: control.itemHeight
+                    radius: 10
+                    color: {
+                        if (isSelected)
+                            return Quark.Palette.accent + "20";
+                        if (mouseArea.containsMouse)
+                            return Quark.Palette.surfaceAlt;
+                        return "transparent";
+                    }
+                    border.width: isSelected ? 2 : 1
+                    border.color: isSelected ? Quark.Palette.accent : Quark.Palette.border
 
-                onClicked: function (mouse) {
-                    if (mouse.button === Qt.RightButton) {
-                        control.contextMenuRequested(entry, mouse);
-                        return;
+                    RowLayout {
+                        anchors.fill: parent
+                        anchors.margins: 12
+                        spacing: 10
+
+                        // 图标
+                        Text {
+                            text: {
+                                switch (entry.iconType) {
+                                case "folder":
+                                    return "📁";
+                                case "image":
+                                    return "🖼️";
+                                case "video":
+                                    return "🎬";
+                                case "audio":
+                                    return "🎵";
+                                case "text":
+                                    return "📄";
+                                case "doc":
+                                    return "📝";
+                                case "pdf":
+                                    return "📕";
+                                case "code":
+                                    return "💻";
+                                case "archive":
+                                    return "📦";
+                                default:
+                                    return "📄";
+                                }
+                            }
+                            font.pixelSize: Quark.Typography.lg
+                            verticalAlignment: Text.AlignVCenter
+                        }
+
+                        // 文件名
+                        Text {
+                            Layout.fillWidth: true
+                            text: entry.name
+                            color: Quark.Palette.text
+                            font.family: Quark.Typography.family
+                            font.pixelSize: Quark.Typography.md
+                            verticalAlignment: Text.AlignVCenter
+                            elide: Text.ElideRight
+                        }
+
+                        // 文件大小
+                        Text {
+                            visible: control.showFileSize && !entry.isDirectory && entry.size !== ""
+                            text: entry.size
+                            color: Quark.Palette.textMuted
+                            font.family: Quark.Typography.family
+                            font.pixelSize: Quark.Typography.sm
+                        }
+
+                        // 修改时间
+                        Text {
+                            visible: control.showModifiedTime && entry.modified !== ""
+                            text: entry.modified
+                            color: Quark.Palette.textMuted
+                            font.family: Quark.Typography.family
+                            font.pixelSize: Quark.Typography.sm
+                        }
                     }
 
-                    // Ctrl+点击多选
-                    if (mouse.modifiers & Qt.ControlModifier) {
-                        control.toggleSelection(itemIndex);
-                    } else {
-                        control.selectedIndices = [itemIndex];
-                    }
+                    MouseArea {
+                        id: mouseArea
+                        anchors.fill: parent
+                        hoverEnabled: true
+                        acceptedButtons: Qt.LeftButton | Qt.RightButton
 
-                    control.entryClicked(entry, itemIndex);
-                }
+                        onClicked: function (mouse) {
+                            if (mouse.button === Qt.RightButton) {
+                                control.contextMenuRequested(entry, mouse);
+                                return;
+                            }
 
-                onDoubleClicked: {
-                    if (entry.isDirectory) {
-                        if (_model)
-                            _model.navigateTo(itemIndex);
-                    } else {
-                        Qt.openUrlExternally(entry.path);
+                            // Ctrl+点击多选
+                            if (mouse.modifiers & Qt.ControlModifier) {
+                                control.toggleSelection(itemIndex);
+                            } else {
+                                control.selectedIndices = [itemIndex];
+                            }
+
+                            control.entryClicked(entry, itemIndex);
+                        }
+
+                        onDoubleClicked: {
+                            if (entry.isDirectory) {
+                                if (_model)
+                                    _model.navigateTo(itemIndex);
+                            } else {
+                                Qt.openUrlExternally(entry.path);
+                            }
+                            control.entryDoubleClicked(entry, itemIndex);
+                        }
                     }
-                    control.entryDoubleClicked(entry, itemIndex);
                 }
             }
         }
-    }
 
-    // ========== 底部状态栏 ==========
-    RowLayout {
-        id: statusbar
-        width: parent.width
-        height: visible ? implicitHeight : 0
-        spacing: 8
-        visible: control.showStatusBar
-
-        Text {
-            text: {
-                var count = control.selectedIndices.length;
-                if (count > 0)
-                    return qsTr("已选择 ") + count + qsTr(" 项");
-                return qsTr("共 ") + (_model ? _model.rowCount : 0) + qsTr(" 项");
-            }
-            color: Quark.Palette.textMuted
-            font.family: Quark.Typography.family
-            font.pixelSize: Quark.Typography.sm
-        }
-
-        Item {
+        // ========== 底部状态栏 ==========
+        RowLayout {
+            id: statusbar
             Layout.fillWidth: true
-        }
+            Layout.preferredHeight: visible ? implicitHeight : 0
+            Layout.minimumHeight: visible ? implicitHeight : 0
+            Layout.maximumHeight: visible ? implicitHeight : 0
+            spacing: 8
+            visible: control.showStatusBar
 
-        Quark.QuarkButton {
-            visible: control.selectedIndices.length > 0
-            text: "🗑️ " + qsTr("删除")
-            accentColor: "#ff4444"
-            foregroundColor: "white"
-            onClicked: {
-                control.deleteRequested(control.selectedIndices);
-                control.selectedIndices = [];
+            Text {
+                text: {
+                    var count = control.selectedIndices.length;
+                    if (count > 0)
+                        return qsTr("已选择 ") + count + qsTr(" 项");
+                    return qsTr("共 ") + control.totalCount() + qsTr(" 项");
+                }
+                color: Quark.Palette.textMuted
+                font.family: Quark.Typography.family
+                font.pixelSize: Quark.Typography.sm
+            }
+
+            Item {
+                Layout.fillWidth: true
+            }
+
+            Quark.QuarkButton {
+                visible: control.selectedIndices.length > 0
+                text: "🗑️ " + qsTr("删除")
+                accentColor: "#ff4444"
+                foregroundColor: "white"
+                onClicked: {
+                    control.deleteRequested(control.selectedIndices);
+                    control.selectedIndices = [];
+                }
             }
         }
     }
@@ -418,6 +446,16 @@ Quark.QuarkCard {
     }
 
     // ========== 方法 ==========
+
+    function totalCount() {
+        if (!_model)
+            return 0;
+        return _model.rowCount();
+    }
+
+    function formatTotalCountText() {
+        return totalCount() + qsTr(" 项");
+    }
 
     // 过滤条目
     function filterEntries() {
