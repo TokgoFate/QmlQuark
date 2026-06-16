@@ -413,7 +413,7 @@ Quark.QuarkCard {
         // standardButtons: Dialog.Ok | Dialog.Cancel
         modal: true
 
-        TextField {
+        Quark.QuarkTextField {
             id: folderNameField
             width: parent.width
             placeholderText: qsTr("文件夹名称")

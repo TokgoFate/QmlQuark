@@ -10,6 +10,22 @@
 #include "QmlQuark/src/mainscreen.h"
 #include "QmlQuark/src/uidevcontroller.h"
 
+namespace
+{
+    const QString g_DebugWindowQml   = QStringLiteral("qrc:/examples/DebugWindow.qml");
+    const QString g_GalleryWindowQml = QStringLiteral("qrc:/examples/Gallery.qml");
+    const QString g_ScrollBarWindowQml =
+        QStringLiteral("qrc:/examples/IndustrialScrollBar_Demo.qml");
+    const QString g_ControlShowcaseQml =
+        QStringLiteral("qrc:/examples/ControlShowcase.qml");
+
+    const QString g_DebugWindowQmlPath   = QStringLiteral("examples/DebugWindow.qml");
+    const QString g_GalleryWindowQmlPath = QStringLiteral("examples/Gallery.qml");
+    const QString g_ScrollBarWindowQmlPath =
+        QStringLiteral("examples/IndustrialScrollBar_Demo.qml");
+    const QString g_ControlShowcaseQmlPath =
+        QStringLiteral("examples/ControlShowcase.qml");
+} // namespace
 
 int main(int argc, char *argv[])
 {
@@ -20,14 +36,18 @@ int main(int argc, char *argv[])
     std::unique_ptr<UiDevController> devController;
     QQmlApplicationEngine            engine;
 
+    const QString mainQml     = g_ControlShowcaseQml;
+    const QString mainQmlPath = g_ControlShowcaseQmlPath;
+
     const QDir    sourceDir(QStringLiteral(QMLQUARK_SOURCE_DIR));
     const QString localImportPath = sourceDir.filePath(QStringLiteral("src"));
-    const QString localMainFile =
-        sourceDir.filePath(QStringLiteral("examples/DebugWindow.qml"));
+    const QString localMainFile   = sourceDir.filePath(mainQmlPath);
+
+    qDebug() << "Import path:" << localMainFile;
 
     engine.addImportPath(QStringLiteral("qrc:/src"));
 
-    QUrl mainUrl(QStringLiteral("qrc:/examples/DebugWindow.qml"));
+    QUrl mainUrl(mainQml);
     bool reloadAvailable = false;
 
 #if !defined(NDEBUG)

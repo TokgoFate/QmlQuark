@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/">
+        <file>examples/ControlShowcase.qml</file>
         <file>examples/DebugWindow.qml</file>
         <file>examples/Gallery.qml</file>
     </qresource>

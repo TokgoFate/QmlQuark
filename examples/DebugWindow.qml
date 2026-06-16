@@ -31,7 +31,7 @@ ApplicationWindow {
             }
 
             Rectangle {
-                width: parent.width
+                Layout.fillWidth: true
                 height: 52
                 radius: 12
                 color: Quark.Palette.surfaceAlt
@@ -51,24 +51,23 @@ ApplicationWindow {
             Quark.QuarkTextField {
                 id: debugText
 
-                width: parent.width
+                Layout.fillWidth: true
                 placeholderText: "输入调试文本"
             }
 
             Quark.QuarkSelectBox {
-                width: parent.width
+                Layout.fillWidth: true
                 model: ["模式 A", "模式 B", "模式 C"]
             }
 
             Quark.QuarkProgressBar {
-                width: parent.width
+                Layout.fillWidth: true
                 value: slider.value
             }
 
             Quark.QuarkSlider {
                 id: slider
-
-                width: parent.width
+                Layout.fillWidth: true
                 from: 0
                 to: 1
                 value: 0.45

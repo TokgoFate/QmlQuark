@@ -4,11 +4,18 @@ singleton Palette 1.0 Theme/Palette.qml
 singleton Typography 1.0 Theme/Typography.qml
 
 QuarkButton 1.0 Controls/QuarkButton.qml
+QuarkBusyIndicator 1.0 Controls/QuarkBusyIndicator.qml
+QuarkCheckBox 1.0 Controls/QuarkCheckBox.qml
 QuarkDropdown 1.0 Controls/QuarkDropdown.qml
+QuarkIconButton 1.0 Controls/QuarkIconButton.qml
+QuarkLabel 1.0 Controls/QuarkLabel.qml
 QuarkProgressBar 1.0 Controls/QuarkProgressBar.qml
+QuarkRadioButton 1.0 Controls/QuarkRadioButton.qml
 QuarkSlider 1.0 Controls/QuarkSlider.qml
 QuarkSelectBox 1.0 Controls/QuarkSelectBox.qml
+QuarkSpinBox 1.0 Controls/QuarkSpinBox.qml
 QuarkTextField 1.0 Controls/QuarkTextField.qml
+QuarkScrollBar 1.0 Controls/QuarkScrollBar.qml
 
 QuarkAlertDialog 1.0 Composites/QuarkAlertDialog.qml
 QuarkCard 1.0 Composites/QuarkCard.qml
