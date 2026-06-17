@@ -1,8 +1,3 @@
-import QtQuick 2.15
-import QtQuick.Controls 2.15
-import QtQuick.Layouts 1.15
-import QmlQuark 1.0 as Quark
-
 /*
  * QuarkScrollBar 使用示例
  *
@@ -11,6 +6,11 @@ import QmlQuark 1.0 as Quark
  *   ② Flickable — 内容列需预留 rightMargin（见右侧示例）
  *   ③ 极细手柄（6px）+ 半透明，即使重叠也几乎不可见
  */
+
+import QmlQuark 1.0 as Quark
+import QtQuick 2.15
+import QtQuick.Controls 2.15
+import QtQuick.Layouts 1.15
 
 Rectangle {
     id: root
@@ -66,7 +66,9 @@ Rectangle {
                                 text: "ScrollView 预留空间，Flickable 适合做 overlay。"
                                 muted: true
                             }
+
                         }
+
                     }
 
                     Rectangle {
@@ -92,10 +94,15 @@ Rectangle {
                                 text: "默认 / 成功 / 警告 / 危险 四组滚动反馈色。"
                                 muted: true
                             }
+
                         }
+
                     }
+
                 }
+
             }
+
         }
 
         RowLayout {
@@ -103,63 +110,65 @@ Rectangle {
             Layout.fillHeight: true
             spacing: 20
 
-        Quark.QuarkCard {
-            id: leftCard
-            Layout.preferredWidth: 340
-            Layout.fillHeight: true
-            title: "ScrollView（推荐 · 无重叠）"
+            Quark.QuarkCard {
+                id: leftCard
 
-            // QuarkCard 的 body 已经是 ColumnLayout，子项直接放进去即可
-            Quark.QuarkLabel {
-                Layout.fillWidth: true
-                text: "ScrollView 自动为滚动条预留空间，\n内容不会被遮挡。角落间距也自动处理。"
-                muted: true
-                wrapMode: Text.Wrap
-            }
-
-            ScrollView {
-                Layout.fillWidth: true
+                Layout.preferredWidth: 340
                 Layout.fillHeight: true
-                clip: true
+                title: "ScrollView（推荐 · 无重叠）"
 
-                ScrollBar.vertical: Quark.QuarkScrollBar {}
+                // QuarkCard 的 body 已经是 ColumnLayout，子项直接放进去即可
+                Quark.QuarkLabel {
+                    Layout.fillWidth: true
+                    text: "ScrollView 自动为滚动条预留空间，\n内容不会被遮挡。角落间距也自动处理。"
+                    muted: true
+                    wrapMode: Text.Wrap
+                }
 
-                Column {
-                    spacing: 8
-                    padding: 4
+                ScrollView {
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    clip: true
 
-                    Repeater {
-                        model: 40
+                    Column {
+                        spacing: 8
+                        padding: 4
 
-                        Rectangle {
-                            width: 290
-                            height: 52
-                            radius: 10
-                            color: index % 2 === 0 ? Quark.Palette.surface
-                                                      : Quark.Palette.surfaceAlt
-                            border.width: 1
-                            border.color: Quark.Palette.border
+                        Repeater {
+                            model: 40
 
-                            RowLayout {
-                                anchors.fill: parent
-                                anchors.margins: 12
+                            Rectangle {
+                                width: 290
+                                height: 52
+                                radius: 10
+                                color: index % 2 === 0 ? Quark.Palette.surface : Quark.Palette.surfaceAlt
+                                border.width: 1
+                                border.color: Quark.Palette.border
 
-                                Quark.QuarkLabel {
-                                    Layout.fillWidth: true
-                                    text: "列表项 " + (index + 1)
-                                }
+                                RowLayout {
+                                    anchors.fill: parent
+                                    anchors.margins: 12
 
-                                Quark.QuarkLabel {
-                                    text: index % 3 === 0 ? "● ACTIVE" : "○ IDLE"
-                                    accent: index % 3 === 0
-                                    muted: index % 3 !== 0
+                                    Quark.QuarkLabel {
+                                        Layout.fillWidth: true
+                                        text: "列表项 " + (index + 1)
+                                    }
+
+                                    Quark.QuarkLabel {
+                                        text: index % 3 === 0 ? "● ACTIVE" : "○ IDLE"
+                                        accent: index % 3 === 0
+                                        muted: index % 3 !== 0
+                                    }
                                 }
                             }
                         }
                     }
+
+                    ScrollBar.vertical: Quark.QuarkScrollBar {
+                        policy: ScrollBar.AlwaysOn
+                    }
                 }
             }
-        }
 
             ColumnLayout {
                 Layout.fillWidth: true
@@ -180,6 +189,7 @@ Rectangle {
 
                     Flickable {
                         id: flick
+
                         Layout.fillWidth: true
                         Layout.fillHeight: true
                         contentWidth: width
@@ -188,6 +198,7 @@ Rectangle {
 
                         Column {
                             id: flickColumn
+
                             width: flick.width - 10
                             spacing: 8
 
@@ -198,8 +209,7 @@ Rectangle {
                                     width: flickColumn.width
                                     height: 48
                                     radius: 10
-                                    color: index % 2 === 0 ? Quark.Palette.surface
-                                                              : Quark.Palette.surfaceAlt
+                                    color: index % 2 === 0 ? Quark.Palette.surface : Quark.Palette.surfaceAlt
                                     border.width: 1
                                     border.color: Quark.Palette.border
 
@@ -209,15 +219,20 @@ Rectangle {
                                         anchors.leftMargin: 12
                                         text: "通道 " + String(index + 1).padStart(2, '0')
                                     }
+
                                 }
+
                             }
+
                         }
 
                         ScrollBar.vertical: Quark.QuarkScrollBar {
                             anchors.right: parent.right
                             anchors.rightMargin: 2
                         }
+
                     }
+
                 }
 
                 Quark.QuarkCard {
@@ -243,6 +258,7 @@ Rectangle {
                             Layout.preferredWidth: 50
                             text: "默认"
                         }
+
                         Quark.QuarkScrollBar {
                             Layout.fillWidth: true
                             Layout.alignment: Qt.AlignVCenter
@@ -256,6 +272,7 @@ Rectangle {
                             text: "成功"
                             accent: true
                         }
+
                         Quark.QuarkScrollBar {
                             Layout.fillWidth: true
                             Layout.alignment: Qt.AlignVCenter
@@ -270,6 +287,7 @@ Rectangle {
                             text: "警告"
                             color: "#eab308"
                         }
+
                         Quark.QuarkScrollBar {
                             Layout.fillWidth: true
                             Layout.alignment: Qt.AlignVCenter
@@ -284,6 +302,7 @@ Rectangle {
                             text: "危险"
                             color: "#ef4444"
                         }
+
                         Quark.QuarkScrollBar {
                             Layout.fillWidth: true
                             Layout.alignment: Qt.AlignVCenter
@@ -293,7 +312,9 @@ Rectangle {
                             position: 0.7
                             handleColor: "#ef4444"
                         }
+
                     }
+
                 }
             }
         }

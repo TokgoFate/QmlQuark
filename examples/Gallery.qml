@@ -13,14 +13,29 @@ Item {
     implicitWidth: 800
     implicitHeight: 600
 
-    ColumnLayout {
+    Flickable {
+        id: galleryFlickable
+
         anchors.fill: parent
         anchors.margins: 24
-        spacing: 20
+        contentWidth: width
+        contentHeight: contentColumn.implicitHeight
+        clip: true
 
-        Quark.QuarkCard {
-            Layout.fillWidth: true
-            title: "交互与组合组件"
+        ScrollBar.vertical: Quark.QuarkScrollBar {
+            anchors.right: parent.right
+            anchors.rightMargin: 4
+        }
+
+        ColumnLayout {
+            id: contentColumn
+
+            width: galleryFlickable.width - 10
+            spacing: 20
+
+            Quark.QuarkCard {
+                Layout.fillWidth: true
+                title: "交互与组合组件"
 
             ColumnLayout {
                 Layout.fillWidth: true
@@ -92,11 +107,11 @@ Item {
             }
         }
 
-        GridLayout {
-            Layout.fillWidth: true
-            columns: width > 920 ? 2 : 1
-            columnSpacing: 20
-            rowSpacing: 20
+            GridLayout {
+                Layout.fillWidth: true
+                columns: width > 920 ? 2 : 1
+                columnSpacing: 20
+                rowSpacing: 20
 
             Quark.QuarkCard {
                 Layout.fillWidth: true
@@ -198,7 +213,6 @@ Item {
 
                     Quark.QuarkDropdown {
                         id: galleryMenu
-
                         y: 52
                         model: ["新建文件", "刷新目录", "打开设置"]
                     }
@@ -233,41 +247,42 @@ Item {
             }
         }
 
-        Quark.QuarkMenu {
-            id: contextMenu
+            Quark.QuarkMenu {
+                id: contextMenu
 
-            Action { text: "新建文件" }
-            Action { text: "刷新目录" }
-            Action { text: "打开设置"; enabled: false }
-        }
-
-        Quark.QuarkMenu {
-            id: fileContextMenu
-            property var entryData: null
-
-            Action {
-                text: "进入目录"
-                enabled: fileContextMenu.entryData && fileContextMenu.entryData.isDirectory
+                Action { text: "新建文件" }
+                Action { text: "刷新目录" }
+                Action { text: "打开设置"; enabled: false }
             }
-            Action {
-                text: "打开文件"
-                enabled: fileContextMenu.entryData && !fileContextMenu.entryData.isDirectory
+
+            Quark.QuarkMenu {
+                id: fileContextMenu
+                property var entryData: null
+
+                Action {
+                    text: "进入目录"
+                    enabled: fileContextMenu.entryData && fileContextMenu.entryData.isDirectory
+                }
+                Action {
+                    text: "打开文件"
+                    enabled: fileContextMenu.entryData && !fileContextMenu.entryData.isDirectory
+                }
+                Action { text: "刷新" }
             }
-            Action { text: "刷新" }
-        }
 
-        Quark.QuarkFileManager {
-            id: galleryFileManager
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-            showSearch: false
-            showToolbar: false
-            showStatusBar: false
-            currentPath: "/"
+            Quark.QuarkFileManager {
+                id: galleryFileManager
+                Layout.fillWidth: true
+                Layout.preferredHeight: 350
+                showSearch: false
+                showToolbar: false
+                showStatusBar: false
+                currentPath: "/"
 
-            onContextMenuRequested: function(entry, mouse) {
-                fileContextMenu.entryData = entry
-                fileContextMenu.popup()
+                onContextMenuRequested: function(entry, mouse) {
+                    fileContextMenu.entryData = entry
+                    fileContextMenu.popup()
+                }
             }
         }
     }

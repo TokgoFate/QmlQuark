@@ -16,9 +16,13 @@ Label {
         acceptedButtons: Qt.NoButton
     }
 
-    // 隐式宽度 > 实际宽度 = 文本被截断
+    // 仅在单行 + 开启 elide 时检测省略，换行文本不显示 tooltip
     readonly property bool truncated:
-        text.length > 0 && implicitWidth > width + 1
+        text.length > 0
+        && wrapMode === Text.NoWrap
+        && lineCount === 1
+        && elide !== Text.ElideNone
+        && implicitWidth > width + 1
 
     color: !control.enabled
             ? Quark.Palette.disabled

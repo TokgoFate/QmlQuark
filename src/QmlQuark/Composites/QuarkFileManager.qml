@@ -194,8 +194,8 @@ Quark.QuarkCard {
             id: listFrame
             Layout.fillWidth: true
             Layout.fillHeight: true
-            Layout.minimumHeight: control.minListHeight
-            Layout.maximumHeight: control.maxListHeight > 0 ? control.maxListHeight : Number.POSITIVE_INFINITY
+            // Layout.minimumHeight: control.minListHeight
+            // Layout.maximumHeight: control.maxListHeight > 0 ? control.maxListHeight : Number.POSITIVE_INFINITY
             implicitHeight: control.minListHeight
             radius: 12
             color: "transparent"
