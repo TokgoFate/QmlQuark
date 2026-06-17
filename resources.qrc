@@ -3,5 +3,6 @@
         <file>examples/ControlShowcase.qml</file>
         <file>examples/DebugWindow.qml</file>
         <file>examples/Gallery.qml</file>
+        <file>examples/IndustrialScrollBar_Demo.qml</file>
     </qresource>
 </RCC>

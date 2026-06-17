@@ -50,14 +50,14 @@ ComboBox {
         anchors.verticalCenter: parent.verticalCenter
         source: "qrc:/Icons/chevron-down.svg"
         fillMode: Image.PreserveAspectFit
-        // color: Quark.Palette.textMuted
+        opacity: control.enabled ? 0.9 : 0.45
     }
 
     contentItem: Text {
         leftPadding: 12
         rightPadding: 36
         text: control.displayText
-        color: Quark.Palette.text
+        color: control.enabled ? Quark.Palette.text : Quark.Palette.disabled
         font: control.font
         verticalAlignment: Text.AlignVCenter
         elide: Text.ElideRight
@@ -65,9 +65,11 @@ ComboBox {
 
     background: Rectangle {
         radius: 12
-        color: Quark.Palette.surface
+        color: control.enabled ? Quark.Palette.surface : Qt.darker(Quark.Palette.surfaceAlt, 1.02)
         border.width: control.visualFocus ? 2 : 1
-        border.color: control.visualFocus ? Quark.Palette.accent : Quark.Palette.border
+        border.color: control.enabled
+                      ? (control.visualFocus ? Quark.Palette.accent : Quark.Palette.border)
+                      : Qt.darker(color, 1.08)
     }
 
     popup: Popup {

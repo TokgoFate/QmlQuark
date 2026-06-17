@@ -5,6 +5,7 @@ QtObject {
     readonly property color window: "#111827"
     readonly property color surface: "#1f2937"
     readonly property color surfaceAlt: "#273449"
+    readonly property color disabled: "#8694a8"
     readonly property color border: "#3b495f"
     readonly property color text: "#f3f4f6"
     readonly property color textMuted: "#9ca3af"

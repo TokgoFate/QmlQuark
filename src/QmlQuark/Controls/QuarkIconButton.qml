@@ -10,7 +10,7 @@ Button {
 	property real iconRotation: 0
 	property bool outlined: true
 	property color accentColor: Quark.Palette.accent
-	property color foregroundColor: control.enabled ? Quark.Palette.text : Quark.Palette.textMuted
+	property color foregroundColor: control.enabled ? Quark.Palette.text : Quark.Palette.disabled
 
 	implicitWidth: 40
 	implicitHeight: 40
@@ -19,7 +19,7 @@ Button {
 	background: Rectangle {
 		radius: 12
 		color: !control.enabled
-			   ? Qt.darker(Quark.Palette.surface, 1.05)
+			   ? Qt.darker(Quark.Palette.surfaceAlt, 1.02)
 			   : control.outlined
 				 ? (control.down
 					? Qt.darker(Quark.Palette.surfaceAlt, 1.15)
@@ -32,9 +32,11 @@ Button {
 					  ? Qt.lighter(control.accentColor, 1.08)
 					  : control.accentColor)
 		border.width: 1
-		border.color: control.outlined
-					  ? (control.hovered ? control.accentColor : Quark.Palette.border)
-					  : Qt.darker(color, 1.12)
+		border.color: !control.enabled
+					  ? Qt.darker(color, 1.08)
+					  : control.outlined
+						? (control.hovered ? control.accentColor : Quark.Palette.border)
+						: Qt.darker(color, 1.12)
 	}
 
 	contentItem: Item {
@@ -48,7 +50,7 @@ Button {
 			fillMode: Image.PreserveAspectFit
 			sourceSize.width: width
 			sourceSize.height: height
-			opacity: control.enabled ? 1.0 : 0.45
+			opacity: control.enabled ? 1.0 : 0.65
 		}
 	}
 }

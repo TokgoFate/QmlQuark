@@ -194,6 +194,67 @@ Rectangle {
 }
 ```
 
+### 2.6 Qt Quick 中的多组宽度属性
+
+Qt Quick 中 `Item` 及其子类拥有多个宽度相关属性，各自语义不同，混用极易导致布局 bug。
+
+**核心宽度属性：**
+
+```
+                        implicitWidth（自然宽度）
+                        ├──────────────────────────────────────────┤
+
+            width（实际渲染宽度，被 parent/Layout 约束后）
+            ├───────────────────┤
+
+                paintedWidth（文字实际绘制宽度，elide 后变短）
+                ├──────────────────┤
+
+            contentWidth（内容区宽度，Flickable/ListView 等滚动容器专用）
+            ├──────────────────────────────────────────────────────┤
+```
+
+| 属性 | 含义 | 谁决定 | 典型示例 |
+|------|------|--------|----------|
+| `implicitWidth` | **自然宽度**：不施加任何约束时，元素本身"想要"的宽度 | 内容自身（文字长度、图片尺寸等） | 长文本 Label 的 `implicitWidth` ≈ 全文渲染宽 220px |
+| `width` | **实际宽度**：元素在屏幕上的真实占用宽度 | 显式赋值 / 父容器 anchors 约束 / Layout 分配 | 同一个 Label 被 `Layout.preferredWidth: 120` 约束后，`width = 120` |
+| `paintedWidth` | **绘制宽度**：文本被渲染引擎实际绘制的像素宽度 | 实际渲染结果（受 elide/wrap 影响） | 截断后 ≈ 120px（刚好填满约束宽度） |
+| `contentWidth` | **内容宽度**：Flickable / ListView 等滚动容器的内部内容总宽度 | 内容自身 | Flickable 内 420px 宽的 Rectangle → `contentWidth = 420` |
+| `availableWidth` | **可用宽度**：Layout 在布局过程中分配给该项的宽度 | 布局管理器 | **仅在布局计算期间有效**，布局完成后不应依赖 |
+
+**使用场景速查：**
+
+| 场景 | 用哪个 | 判断逻辑 |
+|------|--------|----------|
+| **检测文本是否被截断** | `implicitWidth > width` | 自然宽度超出实际宽度 = elide 生效 |
+| **Flickable 滚动范围** | `contentWidth` / `contentHeight` | 内容比视口大时出现滚动条 |
+| **自适应字号（动态缩放）** | `paintedWidth` vs `width` | 调整 `font.pixelSize` 使文字刚好填满 |
+| **Layout 子项尺寸建议** | `implicitWidth` / `implicitHeight` | 告诉父布局"我至少需要多大" |
+| **Item 定位 / 碰撞检测** | `width` / `height` | 实际占位，布局和渲染的唯一权威值 |
+
+**截断检测示例（QuarkLabel）：**
+
+```qml
+Label {
+    id: control
+    elide: Text.ElideRight
+
+    // implicitWidth 是全文自然宽度，width 是被约束后的实际宽度
+    // 当 implicitWidth > width 时，Qt 自动截断并追加 "…"
+    readonly property bool truncated:
+        text.length > 0 && implicitWidth > width + 1
+}
+```
+
+注意：`+1` 是为了容差，避免浮点舍入导致误判。
+
+**常见陷阱：**
+
+1. **`paintedWidth` 在 elide 之前不可靠** — 如果元素还没有完成第一次绘制，`paintedWidth` 可能是 0 或旧值。
+2. **`contentWidth` 在非滚动容器中无意义** — `Label`、`Rectangle`、`Item` 没有 `contentWidth`，只有 Flickable 及其子类才有。
+3. **`availableWidth` 布局完成后不可用** — 它在布局计算过程中有效，但在 `Component.onCompleted` 或事件处理中不应使用。
+4. **`implicitWidth` 不会自动更新** — 如果文字在运行时改变，`implicitWidth` 会随之更新；但如果手动设置了 `implicitWidth`，它将固定为该值。
+
 ## 3. 内容槽与复合控件设计
 
 ### 3.1 default property 要谨慎设计

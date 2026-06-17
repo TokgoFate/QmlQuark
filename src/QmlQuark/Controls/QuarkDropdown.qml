@@ -15,9 +15,9 @@ Popup {
 
     background: Rectangle {
         radius: 14
-        color: Quark.Palette.surface
+        color: control.enabled ? Quark.Palette.surface : Qt.darker(Quark.Palette.surfaceAlt, 1.02)
         border.width: 1
-        border.color: Quark.Palette.border
+        border.color: control.enabled ? Quark.Palette.border : Qt.darker(color, 1.08)
     }
 
     contentItem: ListView {
@@ -32,7 +32,10 @@ Popup {
             width: listView.width
             height: 40
             radius: 10
-            color: mouseArea.containsMouse || isSelected ? Quark.Palette.surfaceAlt : "transparent"
+            color: control.enabled && (mouseArea.containsMouse || isSelected)
+                   ? Quark.Palette.surfaceAlt
+                   : "transparent"
+            opacity: control.enabled ? 1.0 : 0.7
 
             Text {
                 anchors.verticalCenter: parent.verticalCenter
@@ -41,7 +44,7 @@ Popup {
                 anchors.right: parent.right
                 anchors.rightMargin: 12
                 text: typeof modelData === "string" ? modelData : (modelData.text || "")
-                color: Quark.Palette.text
+                color: control.enabled ? Quark.Palette.text : Quark.Palette.disabled
                 font.family: Quark.Typography.family
                 font.pixelSize: Quark.Typography.md
                 elide: Text.ElideRight
@@ -50,7 +53,8 @@ Popup {
             MouseArea {
                 id: mouseArea
                 anchors.fill: parent
-                hoverEnabled: true
+                enabled: control.enabled
+                hoverEnabled: control.enabled
                 onClicked: {
                     var value = typeof modelData === "string" ? modelData : (modelData.text || "")
                     control.currentIndex = index

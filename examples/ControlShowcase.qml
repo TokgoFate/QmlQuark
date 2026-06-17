@@ -3,59 +3,16 @@ import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
 
-ApplicationWindow {
-    id: root
-
-    visible: true
-    width: 1180
-    height: 820
-    color: Quark.Palette.window
-    title: "QmlQuark Control Showcase"
+Item {
+    id: showcaseRoot
 
     property int selectedMode: 0
+    property int previewTabIndex: 0
+    property bool compactCards: showcaseFlickable.width < 1040
+    property int showcaseColumns: showcaseFlickable.width > 1260 ? 3 : (showcaseFlickable.width > 760 ? 2 : 1)
 
-    header: ToolBar {
-        height: 64
-
-        RowLayout {
-            anchors.fill: parent
-            anchors.margins: 12
-            spacing: 12
-
-            ColumnLayout {
-                spacing: 2
-
-                Quark.QuarkLabel {
-                    text: "QmlQuark 控件展台"
-                    font.pixelSize: Quark.Typography.xl
-                    font.bold: true
-                }
-
-                Quark.QuarkLabel {
-                    text: "集中验证基础控件的状态、布局和滚动表现"
-                    muted: true
-                    font.pixelSize: Quark.Typography.sm
-                }
-            }
-
-            Item {
-                Layout.fillWidth: true
-            }
-
-            Quark.QuarkIconButton {
-                iconSource: "qrc:/Icons/chevron-down.svg"
-                iconRotation: 270
-                display: AbstractButton.IconOnly
-                onClicked: showcaseFlickable.contentY = 0
-            }
-        }
-
-        background: Rectangle {
-            color: Quark.Palette.surface
-            border.width: 1
-            border.color: Quark.Palette.border
-        }
-    }
+    implicitWidth: 900
+    implicitHeight: 700
 
     Flickable {
         id: showcaseFlickable
@@ -63,7 +20,7 @@ ApplicationWindow {
         anchors.fill: parent
         anchors.margins: 20
         contentWidth: width
-        contentHeight: contentColumn.implicitHeight
+        contentHeight: contentColumn.height
         clip: true
 
         ScrollBar.vertical: Quark.QuarkScrollBar {
@@ -74,7 +31,8 @@ ApplicationWindow {
         ColumnLayout {
             id: contentColumn
 
-            width: showcaseFlickable.width - 18
+            width: showcaseFlickable.width - 10
+            height: implicitHeight
             spacing: 20
 
             Quark.QuarkCard {
@@ -90,7 +48,7 @@ ApplicationWindow {
                         spacing: 10
 
                         Quark.QuarkLabel {
-                            text: "加载态"
+                            text: "加载状态"
                             font.bold: true
                         }
 
@@ -134,6 +92,33 @@ ApplicationWindow {
                                 muted: true
                             }
                         }
+
+                        Quark.QuarkLabel {
+                            text: "截断 Tooltip"
+                            font.bold: true
+                        }
+
+                        ColumnLayout {
+                            Layout.fillWidth: true
+                            spacing: 6
+
+                            Quark.QuarkLabel {
+                                Layout.preferredWidth: 120
+                                text: "这段文字超长会被截断显示省略号"
+                                accent: true
+                            }
+
+                            Quark.QuarkLabel {
+                                Layout.preferredWidth: 100
+                                text: "QmlQuark Control Showcase Label Truncate Demo"
+                            }
+
+                            Quark.QuarkLabel {
+                                Layout.preferredWidth: 160
+                                text: "工业设备监测面板数据显示完整路径"
+                                muted: true
+                            }
+                        }
                     }
 
                     ColumnLayout {
@@ -157,12 +142,6 @@ ApplicationWindow {
                                 iconRotation: 180
                                 outlined: false
                             }
-
-                            Quark.QuarkIconButton {
-                                iconSource: "qrc:/Icons/chevron-down.svg"
-                                iconRotation: 90
-                                enabled: false
-                            }
                         }
 
                         Quark.QuarkLabel {
@@ -178,9 +157,11 @@ ApplicationWindow {
                 }
             }
 
-            RowLayout {
+            GridLayout {
                 Layout.fillWidth: true
-                spacing: 20
+                columns: compactCards ? 1 : 2
+                columnSpacing: 20
+                rowSpacing: 20
 
                 Quark.QuarkCard {
                     Layout.fillWidth: true
@@ -200,9 +181,36 @@ ApplicationWindow {
                             checkState: Qt.PartiallyChecked
                         }
 
-                        Quark.QuarkCheckBox {
-                            text: "只读模式"
-                            enabled: false
+                        Rectangle {
+                            Layout.fillWidth: true
+                            implicitHeight: 1
+                            color: Quark.Palette.border
+                            opacity: 0.8
+                        }
+
+                        Quark.QuarkLabel {
+                            text: "开关控件"
+                            font.bold: true
+                        }
+
+                        Flow {
+                            Layout.fillWidth: true
+                            width: parent.width
+                            spacing: 16
+
+                            Quark.QuarkSwitch {
+                                text: "启用通知"
+                                checked: true
+                            }
+
+                            Quark.QuarkSwitch {
+                                text: "静默模式"
+                            }
+
+                            Quark.QuarkSwitch {
+                                text: "隐藏文本"
+                                showText: false
+                            }
                         }
 
                         Rectangle {
@@ -219,20 +227,30 @@ ApplicationWindow {
 
                         Quark.QuarkRadioButton {
                             text: "巡检模式"
-                            checked: root.selectedMode === 0
-                            onClicked: root.selectedMode = 0
+                            checked: showcaseRoot.selectedMode === 0
+                            onClicked: showcaseRoot.selectedMode = 0
                         }
 
                         Quark.QuarkRadioButton {
                             text: "维护模式"
-                            checked: root.selectedMode === 1
-                            onClicked: root.selectedMode = 1
+                            checked: showcaseRoot.selectedMode === 1
+                            onClicked: showcaseRoot.selectedMode = 1
                         }
 
                         Quark.QuarkRadioButton {
                             text: "离线模式"
-                            checked: root.selectedMode === 2
-                            onClicked: root.selectedMode = 2
+                            checked: showcaseRoot.selectedMode === 2
+                            onClicked: showcaseRoot.selectedMode = 2
+                        }
+
+                        Quark.QuarkLabel {
+                            text: "分页指示器"
+                            font.bold: true
+                        }
+
+                        Quark.QuarkPageIndicator {
+                            count: 5
+                            currentIndex: 2
                         }
                     }
                 }
@@ -250,11 +268,14 @@ ApplicationWindow {
                             placeholderText: "输入设备名称"
                         }
 
-                        RowLayout {
+                        GridLayout {
                             Layout.fillWidth: true
-                            spacing: 12
+                            columns: showcaseColumns
+                            columnSpacing: 12
+                            rowSpacing: 12
 
                             Quark.QuarkSpinBox {
+                                Layout.fillWidth: true
                                 from: 0
                                 to: 120
                                 value: 24
@@ -271,6 +292,191 @@ ApplicationWindow {
                             from: 0
                             to: 100
                             value: 64
+                        }
+
+                        Quark.QuarkTextArea {
+                            Layout.fillWidth: true
+                            implicitHeight: 72
+                            placeholderText: "多行输入（备注信息）"
+                        }
+                    }
+                }
+
+                Quark.QuarkCard {
+                    Layout.fillWidth: true
+                    Layout.columnSpan: compactCards ? 1 : 2
+                    title: "控件预览"
+
+                    ColumnLayout {
+                        Layout.fillWidth: true
+                        spacing: 16
+
+                        TabBar {
+                            Layout.fillWidth: true
+                            currentIndex: showcaseRoot.previewTabIndex
+
+                            background: Rectangle {
+                                color: "transparent"
+                            }
+
+                            onCurrentIndexChanged: showcaseRoot.previewTabIndex = currentIndex
+
+                            Quark.QuarkTabButton {
+                                text: "常规态"
+                            }
+
+                            Quark.QuarkTabButton {
+                                text: "Disabled"
+                            }
+                        }
+
+                        StackLayout {
+                            Layout.fillWidth: true
+                            currentIndex: showcaseRoot.previewTabIndex
+
+                            Item {
+                                implicitHeight: normalPreview.implicitHeight
+
+                                ColumnLayout {
+                                    id: normalPreview
+
+                                    width: parent.width
+                                    spacing: 12
+
+                                    GridLayout {
+                                        width: parent.width
+                                        columns: showcaseColumns
+                                        columnSpacing: 12
+                                        rowSpacing: 12
+
+                                        Quark.QuarkButton {
+                                            Layout.fillWidth: true
+                                            text: "开始巡检"
+                                        }
+
+                                        Quark.QuarkTextField {
+                                            Layout.fillWidth: true
+                                            text: "设备名称"
+                                        }
+
+                                        Quark.QuarkSelectBox {
+                                            Layout.fillWidth: true
+                                            model: ["工业主题", "暗色主题", "调试主题"]
+                                            currentIndex: 0
+                                        }
+
+                                        Quark.QuarkCheckBox {
+                                            text: "启用复选框"
+                                            checked: true
+                                        }
+
+                                        Quark.QuarkSwitch {
+                                            text: "启用开关"
+                                            checked: true
+                                        }
+
+                                        Quark.QuarkSlider {
+                                            Layout.fillWidth: true
+                                            from: 0
+                                            to: 100
+                                            value: 52
+                                        }
+
+                                        Quark.QuarkBusyIndicator {
+                                            running: true
+                                        }
+
+                                        Quark.QuarkProgressBar {
+                                            Layout.fillWidth: true
+                                            value: 0.58
+                                        }
+
+                                        Quark.QuarkPageIndicator {
+                                            count: 4
+                                            currentIndex: 1
+                                        }
+                                    }
+                                }
+                            }
+
+                            Item {
+                                implicitHeight: disabledPreview.implicitHeight
+
+                                ColumnLayout {
+                                    id: disabledPreview
+
+                                    width: parent.width
+                                    spacing: 12
+
+                                    GridLayout {
+                                        width: parent.width
+                                        columns: showcaseColumns
+                                        columnSpacing: 12
+                                        rowSpacing: 12
+
+                                        Quark.QuarkButton {
+                                            Layout.fillWidth: true
+                                            text: "禁用按钮"
+                                            enabled: false
+                                        }
+
+                                        Quark.QuarkTextField {
+                                            Layout.fillWidth: true
+                                            text: "禁用输入框"
+                                            enabled: false
+                                        }
+
+                                        Quark.QuarkSelectBox {
+                                            Layout.fillWidth: true
+                                            model: ["工业主题", "暗色主题", "调试主题"]
+                                            currentIndex: 2
+                                            enabled: false
+                                        }
+
+                                        Quark.QuarkCheckBox {
+                                            text: "禁用复选框"
+                                            checked: true
+                                            enabled: false
+                                        }
+
+                                        Quark.QuarkSwitch {
+                                            text: "禁用开关"
+                                            checked: true
+                                            enabled: false
+                                        }
+
+                                        Quark.QuarkSlider {
+                                            Layout.fillWidth: true
+                                            from: 0
+                                            to: 100
+                                            value: 52
+                                            enabled: false
+                                        }
+
+                                        Quark.QuarkBusyIndicator {
+                                            running: true
+                                            enabled: false
+                                        }
+
+                                        Quark.QuarkProgressBar {
+                                            Layout.fillWidth: true
+                                            value: 0.58
+                                            enabled: false
+                                        }
+
+                                        Quark.QuarkPageIndicator {
+                                            count: 4
+                                            currentIndex: 1
+                                            enabled: false
+                                        }
+
+                                        Quark.QuarkTabButton {
+                                            text: "禁用页签"
+                                            enabled: false
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
                 }
@@ -304,13 +510,13 @@ ApplicationWindow {
                             clip: true
 
                             ScrollBar.vertical: Quark.QuarkScrollBar {
-                                handleAccentColor: Quark.Palette.accentSoft
+                                handleColor: Quark.Palette.accentSoft
                             }
 
                             delegate: Rectangle {
                                 required property int index
 
-                                width: ListView.view.width
+                                width: ListView.view.width - 8
                                 height: 44
                                 radius: 10
                                 color: index % 2 === 0 ? Quark.Palette.surface : Qt.darker(Quark.Palette.surface, 1.08)
@@ -357,7 +563,7 @@ ApplicationWindow {
                             }
 
                             Quark.QuarkLabel {
-                                text: "该区域用于验证垂直与水平滚动条的轨道、边框和高亮条表现。"
+                                text: "验证垂直/水平极简滚动条，外部放置避免角落重叠。"
                                 muted: true
                                 wrapMode: Text.Wrap
                                 Layout.fillWidth: true
@@ -371,11 +577,11 @@ ApplicationWindow {
                                 clip: true
 
                                 ScrollBar.vertical: Quark.QuarkScrollBar {
-                                    handleAccentColor: Quark.Palette.success
+                                    handleColor: Quark.Palette.success
                                 }
 
                                 ScrollBar.horizontal: Quark.QuarkScrollBar {
-                                    handleAccentColor: Quark.Palette.accent
+                                    handleColor: Quark.Palette.accent
                                 }
 
                                 Rectangle {

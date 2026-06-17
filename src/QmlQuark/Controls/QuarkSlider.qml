@@ -18,7 +18,7 @@ Slider {
         width: orientation === Qt.Horizontal ? control.availableWidth : 6
         height: orientation === Qt.Horizontal ? 6 : control.availableHeight
         radius: width / 2
-        color: Quark.Palette.surfaceAlt
+        color: control.enabled ? Quark.Palette.surfaceAlt : Qt.darker(Quark.Palette.surfaceAlt, 1.04)
 
         // 已填充部分
         Rectangle {
@@ -27,7 +27,7 @@ Slider {
             width: orientation === Qt.Horizontal ? control.invertedPosition * parent.width : parent.width
             height: orientation === Qt.Horizontal ? parent.height : control.invertedPosition * parent.height
             radius: parent.radius
-            color: Quark.Palette.accent
+            color: control.enabled ? Quark.Palette.accent : Quark.Palette.disabled
         }
     }
 
@@ -38,9 +38,11 @@ Slider {
         width: 18
         height: 18
         radius: width / 2
-        color: Quark.Palette.accent
+        color: control.enabled ? Quark.Palette.accent : Qt.lighter(Quark.Palette.disabled, 1.08)
         border.width: 2
-        border.color: control.pressed ? Quark.Palette.accentSoft : Quark.Palette.border
+        border.color: !control.enabled
+                  ? Qt.darker(color, 1.08)
+                  : (control.pressed ? Quark.Palette.accentSoft : Quark.Palette.border)
 
         scale: control.hovered || control.pressed ? 1.4 : 1.0
 

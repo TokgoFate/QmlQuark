@@ -9,13 +9,21 @@ QuarkCheckBox 1.0 Controls/QuarkCheckBox.qml
 QuarkDropdown 1.0 Controls/QuarkDropdown.qml
 QuarkIconButton 1.0 Controls/QuarkIconButton.qml
 QuarkLabel 1.0 Controls/QuarkLabel.qml
+QuarkMenu 1.0 Controls/QuarkMenu.qml
+QuarkMenuItem 1.0 Controls/QuarkMenuItem.qml
+QuarkPageIndicator 1.0 Controls/QuarkPageIndicator.qml
 QuarkProgressBar 1.0 Controls/QuarkProgressBar.qml
 QuarkRadioButton 1.0 Controls/QuarkRadioButton.qml
 QuarkSlider 1.0 Controls/QuarkSlider.qml
 QuarkSelectBox 1.0 Controls/QuarkSelectBox.qml
 QuarkSpinBox 1.0 Controls/QuarkSpinBox.qml
+QuarkSwitch 1.0 Controls/QuarkSwitch.qml
+QuarkTextArea 1.0 Controls/QuarkTextArea.qml
 QuarkTextField 1.0 Controls/QuarkTextField.qml
+QuarkToolBar 1.0 Controls/QuarkToolBar.qml
 QuarkScrollBar 1.0 Controls/QuarkScrollBar.qml
+QuarkTabButton 1.0 Controls/QuarkTabButton.qml
+QuarkToolTip 1.0 Controls/QuarkToolTip.qml
 
 QuarkAlertDialog 1.0 Composites/QuarkAlertDialog.qml
 QuarkCard 1.0 Composites/QuarkCard.qml

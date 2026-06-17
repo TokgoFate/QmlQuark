@@ -1,11 +1,18 @@
 cmake_minimum_required(VERSION 3.16)
 
+if(POLICY CMP0091)
+    cmake_policy(SET CMP0091 NEW)
+endif()
+
 project(QmlQuarkDemo VERSION 0.1 LANGUAGES CXX)
 
 file(TO_CMAKE_PATH "${CMAKE_SOURCE_DIR}" QMLQUARK_SOURCE_DIR)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+if(MSVC)
+    set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreadedDLL")
+endif()
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 

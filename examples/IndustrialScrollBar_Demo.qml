@@ -4,351 +4,230 @@ import QtQuick.Layouts 1.15
 import QmlQuark 1.0 as Quark
 
 /*
- * 工业风格滚动条使用示例
- * 演示如何在实际项目中使用该滚动条
+ * QuarkScrollBar 使用示例
+ *
+ * 重叠问题解决方案：
+ *   ① ScrollView — 自动预留空间 + 处理角落间距，内容绝不重叠（推荐）
+ *   ② Flickable — 内容列需预留 rightMargin（见右侧示例）
+ *   ③ 极细手柄（6px）+ 半透明，即使重叠也几乎不可见
  */
 
-ApplicationWindow {
-    id: window
-    visible: true
-    width: 800
-    height: 600
-    title: "Industrial ScrollBar Demo"
+Rectangle {
+    id: root
 
-    // 深色工业背景
-    color: "#0f0f12"
+    color: Quark.Palette.window
+    implicitWidth: 900
+    implicitHeight: 620
 
-    // ============================================
-    // 垂直滚动区域示例
-    // ============================================
+    RowLayout {
+        anchors.fill: parent
+        anchors.margins: 20
+        spacing: 20
 
-    ScrollView {
-        id: verticalScrollView
-        anchors {
-            left: parent.left
-            top: parent.top
-            bottom: parent.bottom
-            margins: 20
-        }
-        width: 300
+        // ============================================================
+        // 左侧：ScrollView（推荐 · 无重叠）
+        // ============================================================
 
-        // 使用自定义工业风格滚动条
-        ScrollBar.vertical: Quark.QuarkScrollBar {
-            // 可以覆盖默认颜色
-            handleAccentColor: "#ff6b35"  // 亮橙色
-        }
+        Quark.QuarkCard {
+            id: leftCard
+            Layout.preferredWidth: 340
+            Layout.fillHeight: true
+            title: "ScrollView（推荐 · 无重叠）"
 
-        // 内容区域
-        Column {
-            spacing: 10
-            padding: 15
+            // QuarkCard 的 body 已经是 ColumnLayout，子项直接放进去即可
+            Quark.QuarkLabel {
+                Layout.fillWidth: true
+                text: "ScrollView 自动为滚动条预留空间，\n内容不会被遮挡。角落间距也自动处理。"
+                muted: true
+                wrapMode: Text.Wrap
+            }
 
-            Repeater {
-                model: 50
+            ScrollView {
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+                clip: true
 
-                Rectangle {
-                    width: 250
-                    height: 60
-                    color: "#1e1e24"
-                    radius: 4
-                    border.color: "#2d2d35"
-                    border.width: 1
+                ScrollBar.vertical: Quark.QuarkScrollBar {}
 
-                    // 工业风格内容项
-                    Row {
-                        anchors.centerIn: parent
-                        spacing: 12
+                Column {
+                    spacing: 8
+                    padding: 4
 
-                        // 状态指示灯
+                    Repeater {
+                        model: 40
+
                         Rectangle {
-                            width: 12
-                            height: 12
-                            radius: 2
-                            color: index % 3 === 0 ? "#e85d04" : "#4a4a52"
+                            width: 290
+                            height: 52
+                            radius: 10
+                            color: index % 2 === 0 ? Quark.Palette.surface
+                                                      : Quark.Palette.surfaceAlt
+                            border.width: 1
+                            border.color: Quark.Palette.border
 
-                            // 发光效果
-                            Rectangle {
-                                anchors.centerIn: parent
-                                width: 16
-                                height: 16
-                                color: parent.color
-                                opacity: 0.3
-                                radius: 3
-                            }
-                        }
+                            RowLayout {
+                                anchors.fill: parent
+                                anchors.margins: 12
 
-                        Text {
-                            text: "System Module " + (index + 1)
-                            color: "#c0c0c8"
-                            font.pixelSize: 14
-                            font.family: "Consolas, monospace"
-                        }
+                                Quark.QuarkLabel {
+                                    Layout.fillWidth: true
+                                    text: "列表项 " + (index + 1)
+                                }
 
-                        Text {
-                            text: index % 2 === 0 ? "[ACTIVE]" : "[STANDBY]"
-                            color: index % 2 === 0 ? "#4ade80" : "#6b7280"
-                            font.pixelSize: 12
-                            font.family: "Consolas, monospace"
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    // ============================================
-    // 水平滚动区域示例
-    // ============================================
-
-    Rectangle {
-        anchors {
-            left: verticalScrollView.right
-            right: parent.right
-            top: parent.top
-            margins: 20
-        }
-        height: 200
-        color: "#1a1a1e"
-        radius: 4
-        border.color: "#2d2d35"
-        border.width: 1
-
-        // 标题
-        Text {
-            anchors {
-                top: parent.top
-                left: parent.left
-                margins: 12
-            }
-            text: "HORIZONTAL SCROLL"
-            color: "#6a6a72"
-            font.pixelSize: 10
-            font.family: "Consolas, monospace"
-            font.letterSpacing: 2
-        }
-
-        ScrollView {
-            anchors {
-                top: parent.top
-                left: parent.left
-                right: parent.right
-                bottom: parent.bottom
-                topMargin: 35
-                margins: 10
-            }
-
-            // 水平滚动条
-            ScrollBar.horizontal: Quark.QuarkScrollBar {
-                handleAccentColor: "#3b82f6"  // 工业蓝
-            }
-
-            // 水平内容
-            Row {
-                spacing: 15
-                height: 140
-
-                Repeater {
-                    model: 30
-
-                    Rectangle {
-                        width: 120
-                        height: 140
-                        color: "#25252e"
-                        radius: 3
-                        border.color: "#35353d"
-                        border.width: 1
-
-                        Column {
-                            anchors.centerIn: parent
-                            spacing: 8
-
-                            Text {
-                                text: "CH-" + String(index + 1).padStart(2, '0')
-                                color: "#e0e0e8"
-                                font.pixelSize: 16
-                                font.family: "Consolas, monospace"
-                                anchors.horizontalCenter: parent.horizontalCenter
-                            }
-
-                            Rectangle {
-                                width: 60
-                                height: 4
-                                color: "#e85d04"
-                                anchors.horizontalCenter: parent.horizontalCenter
-                            }
-
-                            Text {
-                                text: (Math.random() * 100).toFixed(1) + "°C"
-                                color: "#9ca3af"
-                                font.pixelSize: 12
-                                font.family: "Consolas, monospace"
-                                anchors.horizontalCenter: parent.horizontalCenter
+                                Quark.QuarkLabel {
+                                    text: index % 3 === 0 ? "● ACTIVE" : "○ IDLE"
+                                    accent: index % 3 === 0
+                                    muted: index % 3 !== 0
+                                }
                             }
                         }
                     }
                 }
             }
         }
-    }
 
-    // ============================================
-    // 颜色定制示例
-    // ============================================
+        // ============================================================
+        // 右侧：Flickable 方案 + 颜色定制
+        // ============================================================
 
-    Rectangle {
-        anchors {
-            left: verticalScrollView.right
-            right: parent.right
-            top: parent.top
-            topMargin: 240
-            bottom: parent.bottom
-            margins: 20
-        }
-        color: "#1a1a1e"
-        radius: 4
-        border.color: "#2d2d35"
-        border.width: 1
-
-        Text {
-            anchors {
-                top: parent.top
-                left: parent.left
-                margins: 12
-            }
-            text: "CUSTOM COLOR VARIANTS"
-            color: "#6a6a72"
-            font.pixelSize: 10
-            font.family: "Consolas, monospace"
-            font.letterSpacing: 2
-        }
-
-        Column {
-            anchors {
-                top: parent.top
-                left: parent.left
-                right: parent.right
-                bottom: parent.bottom
-                margins: 40
-            }
+        ColumnLayout {
+            Layout.fillWidth: true
+            Layout.fillHeight: true
             spacing: 20
 
-            // 红色警告风格
-            Row {
-                spacing: 10
+            // Flickable + overlay 滚动条
+            Quark.QuarkCard {
+                Layout.fillWidth: true
+                Layout.preferredHeight: 260
+                title: "Flickable + Overlay（内容预留 margin）"
 
-                Text {
-                    text: "ALERT"
-                    color: "#9ca3af"
-                    font.family: "Consolas, monospace"
-                    width: 80
-                    anchors.verticalCenter: parent.verticalCenter
+                Quark.QuarkLabel {
+                    Layout.fillWidth: true
+                    text: "内容列右侧预留 10px，6px 滚动条居其中。\n内容 Right-Margin 方案：width = flick.width - 10"
+                    muted: true
+                    wrapMode: Text.Wrap
                 }
 
-                Quark.QuarkScrollBar {
-                    width: 200
-                    height: 14
-                    orientation: Qt.Horizontal
-                    size: 0.3
-                    position: 0.2
+                Flickable {
+                    id: flick
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    contentWidth: width
+                    contentHeight: flickColumn.implicitHeight
+                    clip: true
 
-                    // 红色警告配色
-                    trackColor: "#1a0505"
-                    trackBorderColor: "#3d1515"
-                    handleColor: "#7f1d1d"
-                    handleHoverColor: "#991b1b"
-                    handlePressedColor: "#450a0a"
-                    handleBorderColor: "#b91c1c"
-                    handleAccentColor: "#ef4444"
-                }
-            }
+                    Column {
+                        id: flickColumn
+                        width: flick.width - 10   // ← 预留滚动条空间
+                        spacing: 8
 
-            // 绿色安全风格
-            Row {
-                spacing: 10
+                        Repeater {
+                            model: 25
 
-                Text {
-                    text: "SAFE"
-                    color: "#9ca3af"
-                    font.family: "Consolas, monospace"
-                    width: 80
-                    anchors.verticalCenter: parent.verticalCenter
-                }
+                            Rectangle {
+                                width: flickColumn.width
+                                height: 48
+                                radius: 10
+                                color: index % 2 === 0 ? Quark.Palette.surface
+                                                          : Quark.Palette.surfaceAlt
+                                border.width: 1
+                                border.color: Quark.Palette.border
 
-                Quark.QuarkScrollBar {
-                    width: 200
-                    height: 14
-                    orientation: Qt.Horizontal
-                    size: 0.5
-                    position: 0.3
+                                Quark.QuarkLabel {
+                                    anchors.verticalCenter: parent.verticalCenter
+                                    anchors.left: parent.left
+                                    anchors.leftMargin: 12
+                                    text: "通道 " + String(index + 1).padStart(2, '0')
+                                }
+                            }
+                        }
+                    }
 
-                    // 绿色安全配色
-                    trackColor: "#051a0a"
-                    trackBorderColor: "#153d25"
-                    handleColor: "#1d7f3d"
-                    handleHoverColor: "#1b9952"
-                    handlePressedColor: "#0a4518"
-                    handleBorderColor: "#1cb94e"
-                    handleAccentColor: "#22c55e"
+                    ScrollBar.vertical: Quark.QuarkScrollBar {
+                        anchors.right: parent.right
+                        anchors.rightMargin: 2
+                    }
                 }
             }
 
-            // 蓝色信息风格
-            Row {
-                spacing: 10
+            // 颜色定制
+            Quark.QuarkCard {
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+                title: "颜色定制"
 
-                Text {
-                    text: "INFO"
-                    color: "#9ca3af"
-                    font.family: "Consolas, monospace"
-                    width: 80
-                    anchors.verticalCenter: parent.verticalCenter
+                Quark.QuarkLabel {
+                    Layout.fillWidth: true
+                    text: "通过 handleColor 切换滚动条主题色。\n默认 / 成功 / 警告 / 危险 四种语义色。"
+                    muted: true
+                    wrapMode: Text.Wrap
                 }
 
-                Quark.QuarkScrollBar {
-                    width: 200
-                    height: 14
-                    orientation: Qt.Horizontal
-                    size: 0.4
-                    position: 0.1
+                GridLayout {
+                    Layout.fillWidth: true
+                    Layout.topMargin: 4
+                    columns: 2
+                    rowSpacing: 14
+                    columnSpacing: 12
 
-                    // 蓝色信息配色
-                    trackColor: "#05101a"
-                    trackBorderColor: "#15253d"
-                    handleColor: "#1d4a7f"
-                    handleHoverColor: "#1b5e99"
-                    handlePressedColor: "#0a2045"
-                    handleBorderColor: "#1c6cb9"
-                    handleAccentColor: "#3b82f6"
-                }
-            }
+                    // 默认 Accent
+                    Quark.QuarkLabel {
+                        Layout.preferredWidth: 50
+                        text: "默认"
+                    }
+                    Quark.QuarkScrollBar {
+                        Layout.fillWidth: true
+                        Layout.alignment: Qt.AlignVCenter
+                        height: 14
+                        orientation: Qt.Horizontal
+                        size: 0.35
+                        position: 0.15
+                    }
 
-            // 黄色警告风格
-            Row {
-                spacing: 10
+                    // 成功绿
+                    Quark.QuarkLabel {
+                        text: "成功"
+                        accent: true
+                    }
+                    Quark.QuarkScrollBar {
+                        Layout.fillWidth: true
+                        Layout.alignment: Qt.AlignVCenter
+                        height: 14
+                        orientation: Qt.Horizontal
+                        size: 0.5
+                        position: 0.1
+                        handleColor: Quark.Palette.success
+                    }
 
-                Text {
-                    text: "WARN"
-                    color: "#9ca3af"
-                    font.family: "Consolas, monospace"
-                    width: 80
-                    anchors.verticalCenter: parent.verticalCenter
-                }
+                    // 警告橙
+                    Quark.QuarkLabel {
+                        text: "警告"
+                        color: "#eab308"
+                    }
+                    Quark.QuarkScrollBar {
+                        Layout.fillWidth: true
+                        Layout.alignment: Qt.AlignVCenter
+                        height: 14
+                        orientation: Qt.Horizontal
+                        size: 0.25
+                        position: 0.4
+                        handleColor: "#eab308"
+                    }
 
-                Quark.QuarkScrollBar {
-                    width: 200
-                    height: 14
-                    orientation: Qt.Horizontal
-                    size: 0.25
-                    position: 0.5
-
-                    // 黄色警告配色
-                    trackColor: "#1a1505"
-                    trackBorderColor: "#3d3315"
-                    handleColor: "#7f6b1d"
-                    handleHoverColor: "#99851b"
-                    handlePressedColor: "#453a0a"
-                    handleBorderColor: "#b9a01c"
-                    handleAccentColor: "#eab308"
+                    // 危险红
+                    Quark.QuarkLabel {
+                        text: "危险"
+                        color: "#ef4444"
+                    }
+                    Quark.QuarkScrollBar {
+                        Layout.fillWidth: true
+                        Layout.alignment: Qt.AlignVCenter
+                        height: 14
+                        orientation: Qt.Horizontal
+                        size: 0.2
+                        position: 0.7
+                        handleColor: "#ef4444"
+                    }
                 }
             }
         }

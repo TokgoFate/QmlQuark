@@ -10,7 +10,7 @@ ProgressBar {
 
     background: Rectangle {
         radius: height / 2
-        color: Quark.Palette.surfaceAlt
+        color: control.enabled ? Quark.Palette.surfaceAlt : Qt.darker(Quark.Palette.surfaceAlt, 1.04)
     }
 
     contentItem: Item {
@@ -18,7 +18,7 @@ ProgressBar {
             width: control.visualPosition * parent.width
             height: parent.height
             radius: height / 2
-            color: Quark.Palette.accent
+            color: control.enabled ? Quark.Palette.accent : Quark.Palette.disabled
         }
     }
 }

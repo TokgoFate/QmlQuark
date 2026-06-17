@@ -18,7 +18,7 @@ SpinBox {
 	contentItem: TextInput {
 		z: 1
 		text: control.textFromValue(control.value, control.locale)
-		color: control.enabled ? Quark.Palette.text : Quark.Palette.textMuted
+		color: control.enabled ? Quark.Palette.text : Quark.Palette.disabled
 		font: control.font
 		selectionColor: Quark.Palette.accentSoft
 		selectedTextColor: Quark.Palette.textOnAccent
@@ -39,14 +39,18 @@ SpinBox {
 		width: control.buttonWidth
 		height: control.buttonHeight
 		radius: 8
-		color: control.up.pressed ? Qt.darker(Quark.Palette.surfaceAlt, 1.15) : Quark.Palette.surfaceAlt
+		color: !control.enabled
+			   ? Qt.darker(Quark.Palette.surfaceAlt, 1.02)
+			   : (control.up.pressed ? Qt.darker(Quark.Palette.surfaceAlt, 1.15) : Quark.Palette.surfaceAlt)
 		border.width: 1
-		border.color: control.up.hovered ? Quark.Palette.accent : Quark.Palette.border
+		border.color: !control.enabled
+					  ? Qt.darker(color, 1.08)
+					  : (control.up.hovered ? Quark.Palette.accent : Quark.Palette.border)
 
 		Text {
 			anchors.centerIn: parent
 			text: "+"
-			color: Quark.Palette.text
+			color: control.enabled ? Quark.Palette.text : Quark.Palette.disabled
 			font.family: Quark.Typography.family
 			font.pixelSize: Quark.Typography.md
 			font.bold: true
@@ -59,14 +63,18 @@ SpinBox {
 		width: control.buttonWidth
 		height: control.buttonHeight
 		radius: 8
-		color: control.down.pressed ? Qt.darker(Quark.Palette.surfaceAlt, 1.15) : Quark.Palette.surfaceAlt
+		color: !control.enabled
+			   ? Qt.darker(Quark.Palette.surfaceAlt, 1.02)
+			   : (control.down.pressed ? Qt.darker(Quark.Palette.surfaceAlt, 1.15) : Quark.Palette.surfaceAlt)
 		border.width: 1
-		border.color: control.down.hovered ? Quark.Palette.accent : Quark.Palette.border
+		border.color: !control.enabled
+					  ? Qt.darker(color, 1.08)
+					  : (control.down.hovered ? Quark.Palette.accent : Quark.Palette.border)
 
 		Text {
 			anchors.centerIn: parent
 			text: "−"
-			color: Quark.Palette.text
+			color: control.enabled ? Quark.Palette.text : Quark.Palette.disabled
 			font.family: Quark.Typography.family
 			font.pixelSize: Quark.Typography.md
 			font.bold: true
@@ -75,8 +83,10 @@ SpinBox {
 
 	background: Rectangle {
 		radius: 12
-		color: Quark.Palette.surface
+		color: control.enabled ? Quark.Palette.surface : Qt.darker(Quark.Palette.surfaceAlt, 1.02)
 		border.width: control.activeFocus ? 2 : 1
-		border.color: control.activeFocus ? Quark.Palette.accent : Quark.Palette.border
+		border.color: control.enabled
+				  ? (control.activeFocus ? Quark.Palette.accent : Quark.Palette.border)
+				  : Qt.darker(color, 1.08)
 	}
 }

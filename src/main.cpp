@@ -36,8 +36,8 @@ int main(int argc, char *argv[])
     std::unique_ptr<UiDevController> devController;
     QQmlApplicationEngine            engine;
 
-    const QString mainQml     = g_ControlShowcaseQml;
-    const QString mainQmlPath = g_ControlShowcaseQmlPath;
+    const QString mainQml     = g_DebugWindowQml;
+    const QString mainQmlPath = g_DebugWindowQmlPath;
 
     const QDir    sourceDir(QStringLiteral(QMLQUARK_SOURCE_DIR));
     const QString localImportPath = sourceDir.filePath(QStringLiteral("src"));

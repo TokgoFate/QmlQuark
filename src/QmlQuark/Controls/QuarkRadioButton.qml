@@ -16,11 +16,15 @@ RadioButton {
 		x: control.leftPadding
 		y: control.topPadding + (control.availableHeight - height) / 2
 		radius: width / 2
-		color: control.hovered ? Quark.Palette.surfaceAlt : Quark.Palette.surface
+		color: !control.enabled
+			   ? Qt.darker(Quark.Palette.surfaceAlt, 1.02)
+			   : (control.hovered ? Quark.Palette.surfaceAlt : Quark.Palette.surface)
 		border.width: control.visualFocus ? 2 : 1
-		border.color: control.checked
-					  ? Quark.Palette.accent
-					  : (control.visualFocus ? Quark.Palette.accent : Quark.Palette.border)
+		border.color: !control.enabled
+					  ? Qt.darker(color, 1.08)
+					  : control.checked
+						? Quark.Palette.accent
+						: (control.visualFocus ? Quark.Palette.accent : Quark.Palette.border)
 
 		Rectangle {
 			anchors.centerIn: parent
@@ -28,7 +32,7 @@ RadioButton {
 			height: 10
 			radius: width / 2
 			visible: control.checked
-			color: control.enabled ? Quark.Palette.accent : Quark.Palette.textMuted
+			color: control.enabled ? Quark.Palette.accent : Quark.Palette.disabled
 		}
 	}
 
@@ -36,7 +40,7 @@ RadioButton {
 		leftPadding: control.indicator.width + control.spacing
 		text: control.text
 		font: control.font
-		color: control.enabled ? Quark.Palette.text : Quark.Palette.textMuted
+		color: control.enabled ? Quark.Palette.text : Quark.Palette.disabled
 		verticalAlignment: Text.AlignVCenter
 		elide: Text.ElideRight
 	}

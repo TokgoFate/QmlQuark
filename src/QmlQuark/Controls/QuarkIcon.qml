@@ -10,6 +10,7 @@ Image {
     width: 24
     height: 24
     fillMode: Image.PreserveAspectFit
+    opacity: root.enabled ? 1.0 : 0.55
 
     // 自动着色
     layer.enabled: iconColor !== "transparent"

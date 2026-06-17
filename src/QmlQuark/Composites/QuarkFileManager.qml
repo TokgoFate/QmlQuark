@@ -211,9 +211,7 @@ Quark.QuarkCard {
                 spacing: 6
                 model: control.searchKeyword ? control.filteredEntries : _model
 
-                ScrollBar.vertical: ScrollBar {
-                    policy: ScrollBar.AsNeeded
-                }
+                ScrollBar.vertical: Quark.QuarkScrollBar {}
 
                 // 空状态
                 Text {
@@ -251,7 +249,7 @@ Quark.QuarkCard {
                     }
                     property bool isSelected: control.selectedIndices.indexOf(itemIndex) !== -1
 
-                    width: ListView.view.width
+                    width: ListView.view.width - 8   // 预留给右侧 6px 滚动条
                     height: control.itemHeight
                     radius: 10
                     color: {

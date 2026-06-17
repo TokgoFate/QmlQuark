@@ -7,6 +7,8 @@ BusyIndicator {
 
 	property color accentColor: Quark.Palette.accent
 	property color trackColor: Quark.Palette.surfaceAlt
+	readonly property color resolvedAccentColor: control.enabled ? accentColor : Quark.Palette.disabled
+	readonly property color resolvedTrackColor: control.enabled ? trackColor : Qt.lighter(Quark.Palette.disabled, 1.18)
 
 	implicitWidth: 28
 	implicitHeight: 28
@@ -14,7 +16,7 @@ BusyIndicator {
 	contentItem: Item {
 		implicitWidth: 28
 		implicitHeight: 28
-		opacity: control.running ? 1.0 : 0.45
+		opacity: !control.enabled ? (control.running ? 0.7 : 0.3) : (control.running ? 1.0 : 0.45)
 
 		Repeater {
 			model: 8
@@ -30,7 +32,7 @@ BusyIndicator {
 				width: 5
 				height: 5
 				radius: width / 2
-				color: index < 3 ? control.accentColor : control.trackColor
+				color: index < 3 ? control.resolvedAccentColor : control.resolvedTrackColor
 				opacity: 0.35 + ((8 - index) / 8) * 0.65
 			}
 		}
