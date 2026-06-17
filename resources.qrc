@@ -1,8 +1,13 @@
 <RCC>
     <qresource prefix="/">
         <file>examples/ControlShowcase.qml</file>
+        <file>examples/DebugOverview.qml</file>
         <file>examples/DebugWindow.qml</file>
         <file>examples/Gallery.qml</file>
         <file>examples/IndustrialScrollBar_Demo.qml</file>
+        <file>examples/showcase/FeedbackPanel.qml</file>
+        <file>examples/showcase/InputPanel.qml</file>
+        <file>examples/showcase/NavigationPreviewPanel.qml</file>
+        <file>examples/showcase/SelectionPanel.qml</file>
     </qresource>
 </RCC>

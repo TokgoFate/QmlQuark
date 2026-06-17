@@ -34,7 +34,7 @@ ApplicationWindow {
         title: "调试输入"
         message: "请输入测试值以验证输入组件。"
         placeholderText: "调试内容"
-        onAccepted: debugText.text = text
+        onAccepted: overviewPage.setDebugText(text)
     }
 
     // --- 组件画廊弹窗 ---
@@ -93,19 +93,19 @@ ApplicationWindow {
                 }
 
                 Quark.QuarkTabButton {
-                    text: "调试面板"
+                    text: "总览"
                 }
 
                 Quark.QuarkTabButton {
-                    text: "组件画廊"
+                    text: "基础控件"
                 }
 
                 Quark.QuarkTabButton {
-                    text: "控件展台"
+                    text: "交互组合"
                 }
 
                 Quark.QuarkTabButton {
-                    text: "滚动条示例"
+                    text: "滚动样式"
                 }
             }
 
@@ -137,139 +137,22 @@ ApplicationWindow {
 
         anchors.fill: parent
 
-        // ---- Tab 0: 调试面板（内联） ----
-
         Item {
-            RowLayout {
+            DebugOverview {
+                id: overviewPage
+
                 anchors.fill: parent
-                anchors.margins: 20
-                spacing: 20
 
-                Quark.QuarkCard {
-                    Layout.preferredWidth: 320
-                    Layout.fillHeight: true
-                    title: "调试面板"
-
-                    ColumnLayout {
-                        Layout.fillWidth: true
-                        spacing: 12
-
-                        Text {
-                            text: "当前主题"
-                            color: Quark.Palette.text
-                            font.family: Quark.Typography.family
-                            font.pixelSize: Quark.Typography.md
-                            font.bold: true
-                        }
-
-                        Rectangle {
-                            Layout.fillWidth: true
-                            height: 52
-                            radius: 12
-                            color: Quark.Palette.surfaceAlt
-                            border.width: 1
-                            border.color: Quark.Palette.border
-
-                            Text {
-                                anchors.centerIn: parent
-                                text: "Accent: " + Quark.Palette.accent
-                                color: Quark.Palette.text
-                                font.family: Quark.Typography.family
-                                font.pixelSize: Quark.Typography.sm
-                            }
-                        }
-
-                        Quark.QuarkTextField {
-                            id: debugText
-
-                            Layout.fillWidth: true
-                            placeholderText: "输入调试文本"
-                        }
-
-                        Quark.QuarkSelectBox {
-                            Layout.fillWidth: true
-                            model: ["模式 A", "模式 B", "模式 C"]
-                        }
-
-                        Quark.QuarkProgressBar {
-                            Layout.fillWidth: true
-                            value: slider.value
-                        }
-
-                        Quark.QuarkSlider {
-                            id: slider
-                            Layout.fillWidth: true
-                            from: 0
-                            to: 1
-                            value: 0.45
-                        }
-
-                        Quark.QuarkSlider {
-                            id: slider1
-
-                            width: 18
-                            height: 240
-                            orientation: Qt.Vertical
-                            from: 0
-                            to: 1
-                            value: 0.45
-                        }
-                    }
-                }
-
-                Quark.QuarkCard {
-                    Layout.fillWidth: true
-                    Layout.fillHeight: true
-                    title: "组件预览"
-
-                    ColumnLayout {
-                        width: parent.width
-                        spacing: 12
-
-                        Quark.QuarkButton {
-                            id: debugBtn
-                            text: "打开调试菜单"
-                            onClicked: debugMenu.open()
-                        }
-
-                        Quark.QuarkDropdown {
-                            id: debugMenu
-
-                            y: debugBtn.height + 7
-                            model: ["重载界面", "刷新数据", "打开日志"]
-                        }
-
-                        Item {
-                            Layout.fillWidth: true
-                            Layout.fillHeight: true
-
-                            Quark.QuarkFileManager {
-                                id: fileManager
-                                anchors.fill: parent
-                                currentPath: "./"
-                                showSearch: true
-                                showFileSize: true
-                                onEntryDoubleClicked: function(entry, index) {
-                                    console.log("双击:", entry.name);
-                                }
-                                Component.onCompleted: {
-                                    console.info("size " + width + ", " + height);
-                                }
-                            }
-
-                            Rectangle {
-                                anchors.fill: fileManager
-                                color: "yellow"
-                                opacity: 0.2
-                                visible: false
-                            }
-                        }
-                    }
-                }
+                onAlertRequested: debugAlert.open()
+                onPromptRequested: debugPrompt.open()
             }
         }
 
-        // ---- Tab 1: 组件画廊 ----
+        Item {
+            ControlShowcase {
+                anchors.fill: parent
+            }
+        }
 
         Item {
             Gallery {
@@ -279,17 +162,6 @@ ApplicationWindow {
                 onPromptRequested: galleryPrompt.open()
             }
         }
-
-        // ---- Tab 2: 控件展台 ----
-
-        Item {
-            ControlShowcase {
-                id: showcase
-                anchors.fill: parent
-            }
-        }
-
-        // ---- Tab 3: 工业风滚动条示例 ----
 
         Item {
             IndustrialScrollBar_Demo {

@@ -20,110 +20,240 @@ Item {
 
         Quark.QuarkCard {
             Layout.fillWidth: true
-            title: "基础控件"
+            title: "交互与组合组件"
 
             ColumnLayout {
                 Layout.fillWidth: true
                 spacing: 12
 
+                Quark.QuarkLabel {
+                    Layout.fillWidth: true
+                    text: "这个页面专门验证菜单、弹窗和文件管理器等复合组件。与基础控件矩阵分离后，交互流程更集中，也便于检查弹层定位与右键行为。"
+                    muted: true
+                    wrapMode: Text.Wrap
+                }
+
                 RowLayout {
                     Layout.fillWidth: true
                     spacing: 16
 
-                    Quark.QuarkTextField {
+                    Rectangle {
                         Layout.fillWidth: true
-                        placeholderText: "请输入内容"
+                        implicitHeight: 60
+                        radius: 12
+                        color: Quark.Palette.surfaceAlt
+                        border.width: 1
+                        border.color: Quark.Palette.border
+
+                        RowLayout {
+                            anchors.fill: parent
+                            anchors.margins: 12
+                            spacing: 12
+
+                            Quark.QuarkLabel {
+                                text: "弹层"
+                                font.bold: true
+                            }
+
+                            Quark.QuarkLabel {
+                                Layout.fillWidth: true
+                                text: "Alert / Prompt / Dropdown / Context Menu"
+                                muted: true
+                            }
+                        }
                     }
 
-                    Quark.QuarkSelectBox {
-                        Layout.preferredWidth: 200
-                        model: ["工业主题", "深色主题", "浅色主题"]
-                    }
-                }
+                    Rectangle {
+                        Layout.fillWidth: true
+                        implicitHeight: 60
+                        radius: 12
+                        color: Quark.Palette.surfaceAlt
+                        border.width: 1
+                        border.color: Quark.Palette.border
 
-                Quark.QuarkProgressBar {
-                    Layout.fillWidth: true
-                    value: 0.68
+                        RowLayout {
+                            anchors.fill: parent
+                            anchors.margins: 12
+                            spacing: 12
+
+                            Quark.QuarkLabel {
+                                text: "文件流"
+                                font.bold: true
+                            }
+
+                            Quark.QuarkLabel {
+                                Layout.fillWidth: true
+                                text: "Toolbar / Search / Right Click / Entry Action"
+                                muted: true
+                            }
+                        }
+                    }
                 }
             }
         }
 
-        Quark.QuarkCard {
+        GridLayout {
             Layout.fillWidth: true
-            title: "下拉与弹窗"
+            columns: width > 920 ? 2 : 1
+            columnSpacing: 20
+            rowSpacing: 20
 
-            RowLayout {
+            Quark.QuarkCard {
                 Layout.fillWidth: true
-                spacing: 16
+                title: "菜单与弹窗"
 
-                Quark.QuarkButton {
-                    text: "打开下拉菜单"
-                    onClicked: galleryMenu.open()
-                }
+                ColumnLayout {
+                    Layout.fillWidth: true
+                    spacing: 16
 
-                Quark.QuarkButton {
-                    text: "打开提示弹窗"
-                    onClicked: galleryRoot.alertRequested()
-                }
-
-                Quark.QuarkButton {
-                    text: "打开输入弹窗"
-                    onClicked: galleryRoot.promptRequested()
-                }
-
-                // 右键菜单按钮：左键/右键均可弹出菜单
-                // MouseArea 覆盖捕获右键（Button.onClicked 仅响应左键）
-                Item {
-                    id: menuBtnWrapper
-                    implicitWidth: menuBtn.implicitWidth
-                    implicitHeight: menuBtn.implicitHeight
-
-                    Quark.QuarkButton {
-                        id: menuBtn
-                        anchors.fill: parent
-                        text: "右键菜单"
-                        onClicked: contextMenu.popup(menuBtnWrapper, 0, menuBtnWrapper.height + 4)
+                    Quark.QuarkLabel {
+                        Layout.fillWidth: true
+                        text: "把常见交互入口集中在一个卡片中测试：普通按钮、右键菜单、下拉菜单和弹窗分开但相邻。"
+                        muted: true
+                        wrapMode: Text.Wrap
                     }
 
-                    MouseArea {
-                        anchors.fill: parent
-                        acceptedButtons: Qt.RightButton
-                        onClicked: contextMenu.popup(menuBtnWrapper, 0, menuBtnWrapper.height + 4)
+                    RowLayout {
+                        Layout.fillWidth: true
+                        spacing: 12
+
+                        Quark.QuarkButton {
+                            text: "打开下拉菜单"
+                            onClicked: galleryMenu.open()
+                        }
+
+                        Quark.QuarkButton {
+                            text: "打开提示弹窗"
+                            onClicked: galleryRoot.alertRequested()
+                        }
+
+                        Quark.QuarkButton {
+                            text: "打开输入弹窗"
+                            onClicked: galleryRoot.promptRequested()
+                        }
                     }
-                }
 
-                Quark.QuarkMenu {
-                    id: contextMenu
+                    Item {
+                        id: menuBtnWrapper
+                        implicitWidth: menuBtn.implicitWidth
+                        implicitHeight: menuBtn.implicitHeight
 
-                    // Action + delegate 模式（Qt 官方推荐）
-                    Action { text: "新建文件" }
-                    Action { text: "刷新目录" }
-                    Action { text: "打开设置"; enabled: false }
-                }
+                        Quark.QuarkButton {
+                            id: menuBtn
+                            anchors.fill: parent
+                            text: "右键菜单"
+                            onClicked: contextMenu.popup(menuBtnWrapper, 0, menuBtnWrapper.height + 4)
+                        }
 
-                // 文件管理器右键菜单
-                Quark.QuarkMenu {
-                    id: fileContextMenu
-                    property var entryData: null
-
-                    Action {
-                        text: "进入目录"
-                        enabled: fileContextMenu.entryData && fileContextMenu.entryData.isDirectory
+                        MouseArea {
+                            anchors.fill: parent
+                            acceptedButtons: Qt.RightButton
+                            onClicked: contextMenu.popup(menuBtnWrapper, 0, menuBtnWrapper.height + 4)
+                        }
                     }
-                    Action {
-                        text: "打开文件"
-                        enabled: fileContextMenu.entryData && !fileContextMenu.entryData.isDirectory
+
+                    Rectangle {
+                        Layout.fillWidth: true
+                        implicitHeight: 84
+                        radius: 12
+                        color: Quark.Palette.surfaceAlt
+                        border.width: 1
+                        border.color: Quark.Palette.border
+
+                        ColumnLayout {
+                            anchors.fill: parent
+                            anchors.margins: 12
+                            spacing: 6
+
+                            Quark.QuarkLabel {
+                                text: "测试重点"
+                                font.bold: true
+                            }
+
+                            Quark.QuarkLabel {
+                                Layout.fillWidth: true
+                                text: "验证 popup 相对定位、禁用 Action 呈现，以及右键鼠标事件是否被包装层正确转发。"
+                                muted: true
+                                wrapMode: Text.Wrap
+                            }
+                        }
                     }
-                    Action { text: "刷新" }
                 }
             }
 
-            Quark.QuarkDropdown {
-                id: galleryMenu
+            Quark.QuarkCard {
+                Layout.fillWidth: true
+                title: "下拉菜单预览"
 
-                y: 52
-                model: ["新建文件", "刷新目录", "打开设置"]
+                ColumnLayout {
+                    Layout.fillWidth: true
+                    spacing: 16
+
+                    Quark.QuarkLabel {
+                        Layout.fillWidth: true
+                        text: "独立展示 Dropdown，避免和按钮群挤在同一个布局里。这样更容易看清弹出方向、宽度和边距。"
+                        muted: true
+                        wrapMode: Text.Wrap
+                    }
+
+                    Quark.QuarkDropdown {
+                        id: galleryMenu
+
+                        y: 52
+                        model: ["新建文件", "刷新目录", "打开设置"]
+                    }
+
+                    Rectangle {
+                        Layout.fillWidth: true
+                        implicitHeight: 120
+                        radius: 12
+                        color: Quark.Palette.surfaceAlt
+                        border.width: 1
+                        border.color: Quark.Palette.border
+
+                        ColumnLayout {
+                            anchors.fill: parent
+                            anchors.margins: 12
+                            spacing: 8
+
+                            Quark.QuarkLabel {
+                                text: "结构建议"
+                                font.bold: true
+                            }
+
+                            Quark.QuarkLabel {
+                                Layout.fillWidth: true
+                                text: "基础控件留在矩阵页，复合交互集中在这个页面；文件管理器单独占据大区域，减少调试视线切换。"
+                                muted: true
+                                wrapMode: Text.Wrap
+                            }
+                        }
+                    }
+                }
             }
+        }
+
+        Quark.QuarkMenu {
+            id: contextMenu
+
+            Action { text: "新建文件" }
+            Action { text: "刷新目录" }
+            Action { text: "打开设置"; enabled: false }
+        }
+
+        Quark.QuarkMenu {
+            id: fileContextMenu
+            property var entryData: null
+
+            Action {
+                text: "进入目录"
+                enabled: fileContextMenu.entryData && fileContextMenu.entryData.isDirectory
+            }
+            Action {
+                text: "打开文件"
+                enabled: fileContextMenu.entryData && !fileContextMenu.entryData.isDirectory
+            }
+            Action { text: "刷新" }
         }
 
         Quark.QuarkFileManager {
